@@ -1,0 +1,2 @@
+1. Visit the application at these URLs:
+  API: http{{ if ne .Values.host "localhost" }}s{{ end }}://{{ .Values.host }}{{ .Values.api.ingress.path }}
