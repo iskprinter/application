@@ -18,8 +18,8 @@ pipeline {
         stage('Deploy') {
             when { branch 'main' }
             environment {
-                CLIENT_ID = credentials('client-id')
-                CLIENT_SECRET = credentials('client-secret')
+                CLIENT_ID = credentials('eve-app-client-id')
+                CLIENT_SECRET = credentials('eve-app-client-secret')
                 MONGO_INITDB_ROOT_PASSWORD = credentials('mongo-initdb-root-password')
             }
             steps {
