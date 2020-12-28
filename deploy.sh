@@ -43,4 +43,4 @@ helm "$deploy_command" "$RELEASE_NAME" ./helm \
     --set "api.clientSecret=${CLIENT_SECRET}" \
     --set "database.mongoInitdbRootPassword=${MONGO_INITDB_ROOT_PASSWORD}" \
     --set "host=${HOST}" \
-    $(if [ -n "${other_args[@]}" ]; then echo "${other_args[@]}"; fi)
+    $(if [ ${#other_args[@]} -gt 0 ]; then echo "${other_args[@]}"; fi)
