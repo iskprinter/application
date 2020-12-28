@@ -14,6 +14,7 @@ pipeline {
         stage('Test') {
             steps {
                 sh '''
+                    ls
                     ./deploy.sh \
                         "--client-id=${CLIENT_ID}" \
                         "--client-secret=${CLIENT_SECRET}" \
