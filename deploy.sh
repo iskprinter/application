@@ -32,12 +32,12 @@ for i in "$@"; do
 done
 
 deploy_command='upgrade'
-if ! helm status "$RELEASE_NAME" "${KUBE_CONTEXT:+"--kube-context ${KUBE_CONTEXT}"}" -n "$NAMESPACE" &>/dev/null; then
+if ! helm status "$RELEASE_NAME" $(if [ "${KUBE_CONTEXT:-}" ]; then echo "--kube-context ${KUBE_CONTEXT}"; fi) -n "$NAMESPACE" &>/dev/null; then
     deploy_command='install'
 fi
 
 helm "$deploy_command" "$RELEASE_NAME" ./helm \
-    "${KUBE_CONTEXT:+"--kube-context ${KUBE_CONTEXT}"}" \
+    $(if [ "${KUBE_CONTEXT:-}" ]; then echo "--kube-context ${KUBE_CONTEXT}"; fi) \
     -n "$NAMESPACE" \
     --set "api.clientId=${CLIENT_ID}" \
     --set "api.clientSecret=${CLIENT_SECRET}" \
