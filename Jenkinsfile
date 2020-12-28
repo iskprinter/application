@@ -11,6 +11,14 @@ pipeline {
         MONGO_INITDB_ROOT_PASSWORD = credentials('mongo-initdb-root-password')
     }
     stages {
+        stage('Setup') {
+            steps {
+                sh '''
+                    apk update
+                    apk add bash
+                '''
+            }
+        }
         stage('Test') {
             steps {
                 sh '''
