@@ -6,3 +6,4 @@ spec:
     image: alpine/helm:3.4.2
     command: ['cat']
     tty: true
+  serviceAccount: jenkins
