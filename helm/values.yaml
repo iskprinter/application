@@ -1,0 +1,53 @@
+api:
+  replicaCount: 2
+  image:
+    repository: docker.io/iskprinter/api
+    tag: cab5b15
+    pullPolicy: Always
+  ingress:
+    path: /api
+  service:
+    type: ClusterIP # default
+    port: 3000
+  resources:
+    limits:
+      memory: 128Mi
+    requests:
+      memory: 128Mi
+
+database:
+  replicaCount: 1
+  mongoInitdbRootUsername: root
+  image:
+    repository: mongo
+    tag: 4.4.1-bionic
+    pullPolicy: IfNotPresent # default
+  service:
+    type: ClusterIP # default
+    port: 27017
+  volume:
+    capacity: 8Gi
+    mountPath: /data/db
+  resources:
+    limits:
+      memory: 128Mi
+    requests:
+      memory: 128Mi
+
+ingress:
+  enabled: true
+  annotations:
+    kubernetes.io/ingress.class: nginx
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+  hosts:
+    - paths:
+        - path: /api
+          backend:
+            serviceName: isk-printer-backend
+            servicePort: 3000
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}
