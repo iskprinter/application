@@ -64,7 +64,6 @@ spec:
           app.kubernetes.io/name: database
           app.kubernetes.io/instance: {{ .Release.Name }}
       spec:
-        # storageClassName: "fast"
         accessModes: ["ReadWriteOnce"]
         resources:
           requests:

@@ -3,7 +3,7 @@ api:
   image:
     repository: docker.io/iskprinter/api
     tag: cab5b15
-    pullPolicy: Always
+    pullPolicy: IfNotPresent # default
   ingress:
     path: /api
   service:
@@ -34,20 +34,19 @@ database:
     requests:
       memory: 128Mi
 
-ingress:
-  enabled: true
-  annotations:
-    kubernetes.io/ingress.class: nginx
-    nginx.ingress.kubernetes.io/ssl-redirect: "true"
-  hosts:
-    - paths:
-        - path: /api
-          backend:
-            serviceName: isk-printer-backend
-            servicePort: 3000
-
-nodeSelector: {}
-
-tolerations: []
-
-affinity: {}
+frontend:
+  replicaCount: 2
+  image:
+    repository: docker.io/iskprinter/frontend
+    tag: '8633094'
+    pullPolicy: IfNotPresent # default
+  ingress:
+    path: /
+  service:
+    type: ClusterIP # default
+    port: 80
+  resources:
+    limits:
+      memory: 128Mi
+    requests:
+      memory: 128Mi
