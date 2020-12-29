@@ -7,6 +7,7 @@ api:
   ingress:
     path: /api
   service:
+    name: api
     type: ClusterIP # default
     port: 3000
   resources:
@@ -23,6 +24,7 @@ database:
     tag: 4.4.1-bionic
     pullPolicy: IfNotPresent # default
   service:
+    name: database
     type: ClusterIP # default
     port: 27017
   volume:
@@ -43,6 +45,7 @@ frontend:
   ingress:
     path: /
   service:
+    name: frontend
     type: ClusterIP # default
     port: 80
   resources:
@@ -50,3 +53,14 @@ frontend:
       memory: 128Mi
     requests:
       memory: 128Mi
+
+weeklyDownload:
+  image:
+    repository: docker.io/iskprinter/weekly-download
+    tag: 'd9b9b80'
+    pullPolicy: IfNotPresent # default
+  resources:
+    limits:
+      memory: 256Mi
+    requests:
+      memory: 256Mi

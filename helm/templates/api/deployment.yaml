@@ -32,7 +32,7 @@ spec:
                   name: api
                   key: CLIENT_SECRET
             - name: DB_URL
-              value: mongodb://database:27017
+              value: mongodb://{{ .Values.database.service.name }}:{{ .Values.database.service.port }}
             - name: MONGO_INITDB_ROOT_USERNAME
               valueFrom:
                 secretKeyRef:
