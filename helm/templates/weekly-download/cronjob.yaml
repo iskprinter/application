@@ -3,7 +3,7 @@ kind: CronJob
 metadata:
   name: weekly-download
   labels:
-{{ include "isk-printer.labels" . | indent 4 }}
+{{ include "iskprinter.labels" . | indent 4 }}
 spec:
   schedule: 3 19 * * 4  # Randomly selected: Run weekly on day 4 (Wednesday) at 03:19
   jobTemplate:
