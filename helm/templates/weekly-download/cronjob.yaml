@@ -1,0 +1,36 @@
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  name: weekly-download
+  labels:
+{{ include "isk-printer.labels" . | indent 4 }}
+spec:
+  schedule: 3 19 * * 4  # Randomly selected: Run weekly on day 4 (Wednesday) at 03:19
+  jobTemplate:
+    metadata:
+      labels:
+        app.kubernetes.io/name: weekly-download
+        app.kubernetes.io/instance: {{ .Release.Name }}
+    spec:
+      template:
+        spec:
+          restartPolicy: OnFailure
+          containers:
+          - name: weekly-download
+            image: "{{ .Values.weeklyDownload.image.repository }}:{{ .Values.weeklyDownload.image.tag }}"
+            imagePullPolicy: {{ .Values.weeklyDownload.image.pullPolicy }}
+            env:
+            - name: DB_URL
+              value: mongodb://{{ .Values.database.service.name }}:{{ .Values.database.service.port }}
+            - name: MONGO_INITDB_ROOT_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: database
+                  key: MONGO_INITDB_ROOT_USERNAME
+            - name: MONGO_INITDB_ROOT_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: database
+                  key: MONGO_INITDB_ROOT_PASSWORD
+            resources:
+              {{- toYaml .Values.weeklyDownload.resources | nindent 14 }}
