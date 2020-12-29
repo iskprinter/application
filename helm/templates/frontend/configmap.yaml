@@ -1,0 +1,8 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: frontend
+  labels:
+{{ include "iskprinter.labels" . | indent 4 }}
+data:
+  BACKEND_URL: "{{ required "Argument --set host=<host> is required." .Values.host }}{{ .Values.api.ingress.path }}"
