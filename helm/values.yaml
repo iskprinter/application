@@ -2,7 +2,7 @@ api:
   replicaCount: 2
   image:
     repository: docker.io/iskprinter/api
-    tag: 'b710062'
+    tag: '937e3e9'
     pullPolicy: IfNotPresent # default
   ingress:
     path: /api
@@ -40,7 +40,7 @@ frontend:
   replicaCount: 2
   image:
     repository: docker.io/iskprinter/frontend
-    tag: '0fdbcaf'
+    tag: '06a36d7'
     pullPolicy: IfNotPresent # default
   ingress:
     path: /
@@ -57,7 +57,7 @@ frontend:
 weeklyDownload:
   image:
     repository: docker.io/iskprinter/weekly-download
-    tag: 'd9b9b80'
+    tag: '802ea6a'
     pullPolicy: IfNotPresent # default
   resources:
     limits:
