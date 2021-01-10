@@ -2,7 +2,7 @@ api:
   replicaCount: 2
   image:
     repository: docker.io/iskprinter/api
-    tag: '937e3e9'
+    tag: '09f6cc9'
     pullPolicy: IfNotPresent # default
   ingress:
     path: /api
