@@ -40,7 +40,7 @@ frontend:
   replicaCount: 2
   image:
     repository: docker.io/iskprinter/frontend
-    tag: 'f5c6f79'
+    tag: 'a3369f8'
     pullPolicy: IfNotPresent # default
   ingress:
     path: /
