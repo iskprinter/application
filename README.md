@@ -13,7 +13,8 @@ Install/upgrade the helm chart using the `deploy.sh` script.
     --client-secret=<client-secret> \
     --host=<host> \
     --mongo-initdb-root-password=<mongo-initdb-root-password> \
-    [--kube-context=<kube-context>]
+    [--kube-context=<kube-context>] \
+    [--dry-run]
 ```
 Example values for local deployment:
 * `--client-id='some-client-id'`
