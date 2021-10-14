@@ -18,7 +18,6 @@ api:
 
 database:
   replicaCount: 1
-  mongoInitdbRootUsername: root
   image:
     repository: mongo
     tag: 4.4.1-bionic

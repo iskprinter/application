@@ -9,7 +9,7 @@ metadata:
     nginx.ingress.kubernetes.io/ssl-redirect: "true"
 spec:
   rules:
-    - host: {{ required "Argument --set host=<url> is required." $.Values.host | quote }}
+    - host: {{ required "Argument --set host=<url> is required." .Values.hostname | quote }}
       http:
         paths:
           - path: {{ .Values.api.ingress.path }}

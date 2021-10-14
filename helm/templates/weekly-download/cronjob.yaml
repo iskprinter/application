@@ -21,16 +21,9 @@ spec:
             imagePullPolicy: {{ .Values.weeklyDownload.image.pullPolicy }}
             env:
             - name: DB_URL
-              value: mongodb://{{ .Values.database.service.name }}:{{ .Values.database.service.port }}
-            - name: MONGO_INITDB_ROOT_USERNAME
               valueFrom:
                 secretKeyRef:
-                  name: database
-                  key: MONGO_INITDB_ROOT_USERNAME
-            - name: MONGO_INITDB_ROOT_PASSWORD
-              valueFrom:
-                secretKeyRef:
-                  name: database
-                  key: MONGO_INITDB_ROOT_PASSWORD
+                  name: mongodb
+                  key: url
             resources:
               {{- toYaml .Values.weeklyDownload.resources | nindent 14 }}

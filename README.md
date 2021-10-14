@@ -6,21 +6,13 @@ The helm chart for all IskPrinter components
 
 ## How to use
 
-Install/upgrade the helm chart using the `deploy.sh` script.
-```
-./deploy.sh \
-    --client-id=<client-id> \
-    --client-secret=<client-secret> \
-    --host=<host> \
-    --mongo-initdb-root-password=<mongo-initdb-root-password> \
-    [--kube-context=<kube-context>] \
-    [--dry-run]
-```
-Example values for local deployment:
-* `--client-id='some-client-id'`
-* `--client-secret='some-client-secret'`
-* `--host='localhost'`
-* `--mongo-initdb-root-password='some-password'`
-* `--kube-context='docker-desktop'`
+Deploy using helm. Example parameters are below
 
-Example values for production deployment can be found in the `Jenkinsfile` in this repo.
+helm upgrade --install "$RELEASE_NAME" ./helm \
+    --kube-context "$KUBE_CONTEXT" \
+    -n "$NAMESPACE" \
+    --set "api.clientId=${API_CLIENT_ID}" \
+    --set "api.clientSecret=${API_CLIENT_SECRET}" \
+    --set "mongodb.url=mongodb+srv://${MONGODB_USERNAME}:${MONGODB_PASSWORD}@${MONGODB_HOSTNAME}/?ssl=false"
+    --set 'hostname=iskprinter.com' \
+    [--dry-run]
