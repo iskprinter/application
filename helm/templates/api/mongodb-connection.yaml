@@ -1,0 +1,9 @@
+apiVersion: v1
+kind: Secret
+type: Opaque
+metadata:
+  name: {{ .Values.secrets.mongodbConnection.secretName }}
+  labels:
+{{ include "iskprinter.labels" . | indent 4 }}
+stringData:
+  url: {{ .Values.secrets.mongodbConnection.url }}

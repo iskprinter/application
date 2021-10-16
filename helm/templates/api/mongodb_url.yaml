@@ -1,9 +1,0 @@
-apiVersion: v1
-kind: Secret
-type: Opaque
-metadata:
-  name: mongodb
-  labels:
-{{ include "iskprinter.labels" . | indent 4 }}
-stringData:
-  url: "mongodb+srv://{{ .Values.mongodb.username }}:{{ .Values.mongodb.password }}@{{ .Values.mongodb.hostname }}/?ssl=false"

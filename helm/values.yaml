@@ -63,3 +63,12 @@ weeklyDownload:
       memory: 256Mi
     requests:
       memory: 256Mi
+
+secrets:
+  apiClientCredentials:
+    secretName: api-client-credentials
+    id: ""
+    secret: ""
+  mongodbConnection:
+    secretName: mongodb-connection
+    url: ""
