@@ -24,12 +24,25 @@ resource "kubernetes_ingress" "api" {
         }
       }
     }
+    rule {
+      host = "www.iskprinter.com"
+      http {
+        path {
+          path = "/${var.api_uri_prefix}"
+          backend {
+            service_name = kubernetes_service.api.metadata[0].name
+            service_port = kubernetes_service.api.spec[0].port[0].port
+          }
+        }
+      }
+    }
     tls {
-      hosts = [
-        "iskprinter.com",
-        "www.iskprinter.com"
-      ]
+      hosts = ["iskprinter.com"]
       secret_name = "tls-iskprinter-com"
+    }
+    tls {
+      hosts = ["www.iskprinter.com"]
+      secret_name = "tls-www-iskprinter-com"
     }
   }
 }

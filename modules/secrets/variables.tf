@@ -7,7 +7,7 @@ variable "api_client_secret_base64" {
 }
 
 variable "api_client_credentials_secret_name" {
-  type    = string
+  type = string
 }
 
 variable "mongodb_connection_url_base64" {
@@ -15,7 +15,7 @@ variable "mongodb_connection_url_base64" {
 }
 
 variable "mongodb_connection_secret_name" {
-  type    = string
+  type = string
 }
 
 variable "namespace" {
