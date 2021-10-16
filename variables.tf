@@ -25,7 +25,7 @@ variable "api_client_secret_base64" {
 
 variable "image_api" {
   type    = string
-  default = "us-west1-docker.pkg.dev/cameronhudson8/iskprinter/api:05330d8c60b524b3a6dfc62497c614f633bd8b43"
+  default = "us-west1-docker.pkg.dev/cameronhudson8/iskprinter/api:a26d6ae594590c02e945debd38ae4f6a690101a1"
 }
 
 variable "image_frontend" {
