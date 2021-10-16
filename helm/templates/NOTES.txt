@@ -1,3 +1,0 @@
-1. Visit the application at these URLs:
-  Frontend: http{{ if ne .Values.hostname "localhost" }}s{{ end }}://{{ .Values.hostname }}{{ .Values.frontend.ingress.path }}
-  API: http{{ if ne .Values.hostname "localhost" }}s{{ end }}://{{ .Values.hostname }}{{ .Values.api.ingress.path }}

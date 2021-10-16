@@ -6,15 +6,27 @@ The helm chart for all IskPrinter components
 
 ## How to use
 
-Deploy using helm. Example parameters are below
+Prerequisite: **The namespace set in `variables.tf` must already exist.**
 
-helm upgrade --install "$RELEASE_NAME" ./helm \
-    --kube-context "$KUBE_CONTEXT" \
-    -n "$NAMESPACE" \
-    --set "secrets.apiClientCredentials.secretName=${API_CLIENT_CREDENTIALS_SECRET_NAME}" \
-    --set "secrets.apiClientCredentials.id=${API_CLIENT_ID}" \
-    --set "secrets.apiClientCredentials.secret=${API_CLIENT_SECRET}" \
-    --set "secrets.mongodbConnection.secretName=${MONGODB_CONNECTION_SECRET_NAME}"
-    --set "secrets.mongodbConnection.url=mongodb+srv://${MONGODB_USERNAME}:${MONGODB_PASSWORD}@${MONGODB_HOSTNAME}/?ssl=false"
-    --set 'hostname=iskprinter.com' \
-    [--dry-run]
+If running from within a kuberentes cluster, you don't need to provide authentication manually. For local use, the simplest approach is to provide the path to your `.kube/config`.
+
+```
+export "KUBE_CONFIG_PATH=${HOME}/.kube/config"
+```
+
+Provide secret inputs.
+```
+export TF_VAR_api_client_secret_base64=$(echo -n '<secret>' | base64)
+
+MONGODB_HOSTNAME='mongodb-svc.database.svc.cluster.local'
+MONGODB_USERNAME='...'
+MONGODB_PASSWORD='...'
+
+mongodb_password_urlencoded=$(echo "$MONGODB_PASSWORD" | jq -Rr '@uri')
+export TF_VAR_mongodb_connection_url_base64=$(echo -n "mongodb+srv://${MONGODB_USERNAME}:${mongodb_password_urlencoded}@${MONGODB_HOSTNAME}/?ssl=false" | base64)
+```
+
+Apply.
+```
+terraform apply
+```
