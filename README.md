@@ -6,21 +6,27 @@ The helm chart for all IskPrinter components
 
 ## How to use
 
-Install/upgrade the helm chart using the `deploy.sh` script.
-```
-./deploy.sh \
-    --client-id=<client-id> \
-    --client-secret=<client-secret> \
-    --host=<host> \
-    --mongo-initdb-root-password=<mongo-initdb-root-password> \
-    [--kube-context=<kube-context>] \
-    [--dry-run]
-```
-Example values for local deployment:
-* `--client-id='some-client-id'`
-* `--client-secret='some-client-secret'`
-* `--host='localhost'`
-* `--mongo-initdb-root-password='some-password'`
-* `--kube-context='docker-desktop'`
+Prerequisite: **The namespace set in `variables.tf` must already exist.**
 
-Example values for production deployment can be found in the `Jenkinsfile` in this repo.
+If running from within a kuberentes cluster, you don't need to provide authentication manually. For local use, the simplest approach is to provide the path to your `.kube/config`.
+
+```
+export "KUBE_CONFIG_PATH=${HOME}/.kube/config"
+```
+
+Provide secret inputs.
+```
+export TF_VAR_api_client_secret_base64=$(echo -n '<secret>' | base64)
+
+MONGODB_HOSTNAME='mongodb-svc.database.svc.cluster.local'
+MONGODB_USERNAME='...'
+MONGODB_PASSWORD='...'
+
+mongodb_password_urlencoded=$(echo "$MONGODB_PASSWORD" | jq -Rr '@uri')
+export TF_VAR_mongodb_connection_url_base64=$(echo -n "mongodb+srv://${MONGODB_USERNAME}:${mongodb_password_urlencoded}@${MONGODB_HOSTNAME}/?ssl=false" | base64)
+```
+
+Apply.
+```
+terraform apply
+```
