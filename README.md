@@ -2,8 +2,6 @@
 
 The helm chart for all IskPrinter components
 
-![Build Status](https://iskprinter.com/jenkins/buildStatus/icon?job=helm%2Fmain)
-
 ## How to use
 
 Prerequisite: **The namespace set in `variables.tf` must already exist.**
