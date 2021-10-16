@@ -8,11 +8,13 @@ terraform {
 provider "kubernetes" {}
 
 module "secrets" {
-  source                        = "./modules/secrets"
-  api_client_id                 = var.api_client_id
-  api_client_secret_base64      = var.api_client_secret_base64
-  mongodb_connection_url_base64 = var.mongodb_connection_url_base64
-  namespace                     = var.namespace
+  source                             = "./modules/secrets"
+  api_client_credentials_secret_name = var.api_client_credentials_secret_name
+  api_client_id                      = var.api_client_id
+  api_client_secret_base64           = var.api_client_secret_base64
+  mongodb_connection_secret_name     = var.mongodb_connection_secret_name
+  mongodb_connection_url_base64      = var.mongodb_connection_url_base64
+  namespace                          = var.namespace
 }
 
 module "api" {

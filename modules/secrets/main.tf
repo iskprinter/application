@@ -8,7 +8,7 @@ resource "kubernetes_secret" "api_client_credentials" {
   type = "Opaque"
   metadata {
     namespace = var.namespace
-    name      = "api-client-credentials"
+    name      = var.api_client_credentials_secret_name
   }
   binary_data = {
     (local.api_client_credentials_secret_key_id)     = base64encode(var.api_client_id)
@@ -20,7 +20,7 @@ resource "kubernetes_secret" "mongodb_connection" {
   type = "Opaque"
   metadata {
     namespace = var.namespace
-    name      = "mongodb-connection"
+    name      = var.mongodb_connection_secret_name
   }
   binary_data = {
     (local.mongodb_connection_secret_key_url) = var.mongodb_connection_url_base64
