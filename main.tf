@@ -36,6 +36,16 @@ module "frontend" {
   api_uri_prefix = var.api_uri_prefix
 }
 
+module "ingress" {
+  source                = "./modules/ingress"
+  api_uri_prefix        = var.api_uri_prefix
+  api_service_name      = module.api.service_name
+  api_service_port      = module.api.service_port
+  frontend_service_name = module.frontend.service_name
+  frontend_service_port = module.frontend.service_port
+  namespace             = var.namespace
+}
+
 module "weekly_download" {
   source                            = "./modules/weekly_download"
   image                             = var.image_weekly_download
