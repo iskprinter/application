@@ -1,7 +1,3 @@
-variable "api_uri_prefix" {
-  type = string
-}
-
 variable "api_service_name" {
   type = string
 }

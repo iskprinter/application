@@ -3,11 +3,6 @@ variable "api_client_credentials_secret_name" {
   default = "api-client-credentials"
 }
 
-variable "api_uri_prefix" {
-  type    = string
-  default = "api"
-}
-
 variable "namespace" {
   type    = string
   default = "iskprinter"

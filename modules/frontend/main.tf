@@ -82,6 +82,6 @@ resource "kubernetes_config_map" "frontend" {
     name      = "frontend"
   }
   data = {
-    "BACKEND_URL" = "https://iskprinter.com/${var.api_uri_prefix}"
+    "BACKEND_URL" = "https://api.iskprinter.com"
   }
 }
