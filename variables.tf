@@ -3,11 +3,6 @@ variable "api_client_credentials_secret_name" {
   default = "api-client-credentials"
 }
 
-variable "api_uri_prefix" {
-  type    = string
-  default = "api"
-}
-
 variable "namespace" {
   type    = string
   default = "iskprinter"
@@ -23,9 +18,14 @@ variable "api_client_secret_base64" {
   sensitive = true
 }
 
+variable "google_dns_managed_zone_name" {
+  type    = string
+  default = "iskprinter-com"
+}
+
 variable "image_api" {
   type    = string
-  default = "us-west1-docker.pkg.dev/cameronhudson8/iskprinter/api:a26d6ae594590c02e945debd38ae4f6a690101a1"
+  default = "us-west1-docker.pkg.dev/cameronhudson8/iskprinter/api:0078c47d619c3f3f6a7dc5fab241a5a7a6e19fd7"
 }
 
 variable "image_frontend" {
@@ -36,6 +36,11 @@ variable "image_frontend" {
 variable "image_weekly_download" {
   type    = string
   default = "us-west1-docker.pkg.dev/cameronhudson8/iskprinter/weekly-download:90edfe1c7757c4e701973166af53c77384013e16"
+}
+
+variable "gcp_project" {
+  type    = string
+  default = "cameronhudson8"
 }
 
 variable "mongodb_connection_url_base64" {

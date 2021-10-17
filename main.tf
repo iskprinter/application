@@ -22,7 +22,6 @@ module "api" {
   api_client_credentials_secret_key_id     = module.secrets.api_client_credentials_secret_key_id
   api_client_credentials_secret_key_secret = module.secrets.api_client_credentials_secret_key_secret
   api_client_credentials_secret_name       = module.secrets.api_client_credentials_secret_name
-  api_uri_prefix                           = var.api_uri_prefix
   image                                    = var.image_api
   mongodb_connection_secret_key_url        = module.secrets.mongodb_connection_secret_key_url
   mongodb_connection_secret_name           = module.secrets.mongodb_connection_secret_name
@@ -33,7 +32,17 @@ module "frontend" {
   source         = "./modules/frontend"
   namespace      = var.namespace
   image          = var.image_frontend
-  api_uri_prefix = var.api_uri_prefix
+}
+
+module "ingress" {
+  source                       = "./modules/ingress"
+  api_service_name             = module.api.service_name
+  api_service_port             = module.api.service_port
+  frontend_service_name        = module.frontend.service_name
+  frontend_service_port        = module.frontend.service_port
+  gcp_project                  = var.gcp_project
+  google_dns_managed_zone_name = var.google_dns_managed_zone_name
+  namespace                    = var.namespace
 }
 
 module "weekly_download" {

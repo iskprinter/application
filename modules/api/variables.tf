@@ -10,10 +10,6 @@ variable "api_client_credentials_secret_key_secret" {
   type = string
 }
 
-variable "api_uri_prefix" {
-  type = string
-}
-
 variable "image" {
   type = string
 }

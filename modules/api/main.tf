@@ -1,56 +1,12 @@
 locals {
-  port = 3000
-}
-
-resource "kubernetes_ingress" "api" {
-  metadata {
-    namespace = var.namespace
-    name      = "api"
-    annotations = {
-      "kubernetes.io/ingress.class"              = "nginx"
-      "nginx.ingress.kubernetes.io/ssl-redirect" = "true"
-    }
-  }
-  spec {
-    rule {
-      host = "iskprinter.com"
-      http {
-        path {
-          path = "/${var.api_uri_prefix}"
-          backend {
-            service_name = kubernetes_service.api.metadata[0].name
-            service_port = kubernetes_service.api.spec[0].port[0].port
-          }
-        }
-      }
-    }
-    rule {
-      host = "www.iskprinter.com"
-      http {
-        path {
-          path = "/${var.api_uri_prefix}"
-          backend {
-            service_name = kubernetes_service.api.metadata[0].name
-            service_port = kubernetes_service.api.spec[0].port[0].port
-          }
-        }
-      }
-    }
-    tls {
-      hosts = ["iskprinter.com"]
-      secret_name = "tls-iskprinter-com"
-    }
-    tls {
-      hosts = ["www.iskprinter.com"]
-      secret_name = "tls-www-iskprinter-com"
-    }
-  }
+  service_name = "api"
+  service_port = 3000
 }
 
 resource "kubernetes_service" "api" {
   metadata {
     namespace = var.namespace
-    name      = "api"
+    name      = local.service_name
   }
   spec {
     type = "ClusterIP"
@@ -58,8 +14,8 @@ resource "kubernetes_service" "api" {
       "app.kubernetes.io/name" = "api"
     }
     port {
-      port        = 80
-      target_port = kubernetes_deployment.api.spec[0].template[0].spec[0].container[0].port[0].container_port
+      port        = local.service_port
+      target_port = local.service_port
     }
   }
 }
@@ -114,17 +70,17 @@ resource "kubernetes_deployment" "api" {
             }
           }
           port {
-            container_port = local.port
+            container_port = local.service_port
           }
           liveness_probe {
             http_get {
-              port = local.port
+              port = local.service_port
               path = "/"
             }
           }
           readiness_probe {
             http_get {
-              port = local.port
+              port = local.service_port
               path = "/"
             }
           }
