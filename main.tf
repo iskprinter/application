@@ -37,13 +37,15 @@ module "frontend" {
 }
 
 module "ingress" {
-  source                = "./modules/ingress"
-  api_uri_prefix        = var.api_uri_prefix
-  api_service_name      = module.api.service_name
-  api_service_port      = module.api.service_port
-  frontend_service_name = module.frontend.service_name
-  frontend_service_port = module.frontend.service_port
-  namespace             = var.namespace
+  source                       = "./modules/ingress"
+  api_uri_prefix               = var.api_uri_prefix
+  api_service_name             = module.api.service_name
+  api_service_port             = module.api.service_port
+  frontend_service_name        = module.frontend.service_name
+  frontend_service_port        = module.frontend.service_port
+  gcp_project                  = var.gcp_project
+  google_dns_managed_zone_name = var.google_dns_managed_zone_name
+  namespace                    = var.namespace
 }
 
 module "weekly_download" {
