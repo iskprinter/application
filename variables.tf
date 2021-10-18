@@ -22,12 +22,12 @@ variable "google_dns_managed_zone_name" {
 
 variable "image_api" {
   type    = string
-  default = "us-west1-docker.pkg.dev/cameronhudson8/iskprinter/api:0078c47d619c3f3f6a7dc5fab241a5a7a6e19fd7"
+  default = "us-west1-docker.pkg.dev/cameronhudson8/iskprinter/api:166cf223d31d04608d9141725971245c5579b968"
 }
 
 variable "image_frontend" {
   type    = string
-  default = "us-west1-docker.pkg.dev/cameronhudson8/iskprinter/frontend:b8191b65583f0e7d53b88e3c9aede9df134bf40c"
+  default = "us-west1-docker.pkg.dev/cameronhudson8/iskprinter/frontend:72937523aafbf2f0d9aa45ba84a75d1329d7be20"
 }
 
 variable "image_weekly_download" {
