@@ -1,13 +1,13 @@
 variable "api_client_credentials_secret_key_id" {
-  type    = string
+  type = string
 }
 
 variable "api_client_credentials_secret_key_secret" {
-  type    = string
+  type = string
 }
 
 variable "api_client_credentials_secret_name" {
-  type    = string
+  type = string
 }
 
 variable "namespace" {
@@ -41,9 +41,9 @@ variable "gcp_project" {
 }
 
 variable "mongodb_connection_secret_key_url" {
-  type    = string
+  type = string
 }
 
 variable "mongodb_connection_secret_name" {
-  type    = string
+  type = string
 }
