@@ -1,21 +1,18 @@
+variable "api_client_credentials_secret_key_id" {
+  type    = string
+}
+
+variable "api_client_credentials_secret_key_secret" {
+  type    = string
+}
+
 variable "api_client_credentials_secret_name" {
   type    = string
-  default = "api-client-credentials"
 }
 
 variable "namespace" {
   type    = string
   default = "iskprinter"
-}
-
-variable "api_client_id" {
-  type    = string
-  default = "bf9674bde4cd432193ac5644daf38b07"
-}
-
-variable "api_client_secret_base64" {
-  type      = string
-  sensitive = true
 }
 
 variable "google_dns_managed_zone_name" {
@@ -43,12 +40,10 @@ variable "gcp_project" {
   default = "cameronhudson8"
 }
 
-variable "mongodb_connection_url_base64" {
-  type      = string
-  sensitive = true
+variable "mongodb_connection_secret_key_url" {
+  type    = string
 }
 
 variable "mongodb_connection_secret_name" {
   type    = string
-  default = "mongodb-connection"
 }
