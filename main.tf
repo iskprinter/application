@@ -19,9 +19,9 @@ module "api" {
 }
 
 module "frontend" {
-  source         = "./modules/frontend"
-  namespace      = var.namespace
-  image          = var.image_frontend
+  source    = "./modules/frontend"
+  namespace = var.namespace
+  image     = var.image_frontend
 }
 
 module "ingress" {
