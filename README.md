@@ -1,6 +1,6 @@
-# iskprinter/helm
+# iskprinter/application
 
-The helm chart for all IskPrinter components
+The stateless application layer
 
 ## How to use
 
