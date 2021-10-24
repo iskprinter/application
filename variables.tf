@@ -22,7 +22,7 @@ variable "google_dns_managed_zone_name" {
 
 variable "image_api" {
   type    = string
-  default = "us-west1-docker.pkg.dev/cameronhudson8/iskprinter/api:cc1d2fcf414639c4a88fbb11822f3203aed6bc53"
+  default = "us-west1-docker.pkg.dev/cameronhudson8/iskprinter/api:e6c2c78649465e9f9f69f1120dd0f93e3dd0a5c5"
 }
 
 variable "image_frontend" {
