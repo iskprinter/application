@@ -7,9 +7,6 @@ resource "kubernetes_service" "api" {
   metadata {
     namespace = var.namespace
     name      = local.service_name
-    annotations = {
-      "mongodbConnectionSecretVersion" = var.mongodb_connection_secret_version
-    }
   }
   spec {
     type = "ClusterIP"
@@ -39,6 +36,9 @@ resource "kubernetes_deployment" "api" {
       metadata {
         labels = {
           "app.kubernetes.io/name" = "api"
+        }
+        annotations = {
+          "mongodbConnectionSecretVersion" = var.mongodb_connection_secret_version
         }
       }
       spec {
