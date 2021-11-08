@@ -7,7 +7,16 @@ terraform {
 
 provider "kubernetes" {}
 
+resource "kubernetes_namespace" "namespace" {
+  metadata {
+    name = var.namespace
+  }
+}
+
 module "api" {
+  depends_on = [
+    kubernetes_namespace.namespace
+  ]
   source                                   = "./modules/api"
   api_client_credentials_secret_key_id     = var.api_client_credentials_secret_key_id
   api_client_credentials_secret_key_secret = var.api_client_credentials_secret_key_secret
@@ -18,13 +27,45 @@ module "api" {
   namespace                                = var.namespace
 }
 
+module "db_document" {
+  depends_on = [
+    kubernetes_namespace.namespace
+  ]
+  source                         = "./modules/db_document"
+  mongodb_connection_secret_name = var.mongodb_connection_secret_name
+  mongodb_replicas               = var.mongodb_replicas
+  namespace                      = var.data_namespace
+  project                        = var.gcp_project
+  region                         = var.region
+}
+
+module "db_graph" {
+  depends_on = [
+    kubernetes_namespace.namespace
+  ]
+  source                       = "./modules/db_graph"
+  namespace                    = var.data_namespace
+  neo4j_persistent_volume_size = var.neo4j_persistent_volume_size
+  neo4j_release_name           = var.neo4j_release_name
+  neo4j_replicas               = var.neo4j_replicas
+  neo4j_version                = var.neo4j_version
+  project                      = var.gcp_project
+  region                       = var.region
+}
+
 module "frontend" {
+  depends_on = [
+    kubernetes_namespace.namespace
+  ]
   source    = "./modules/frontend"
   namespace = var.namespace
   image     = var.image_frontend
 }
 
 module "ingress" {
+  depends_on = [
+    kubernetes_namespace.namespace
+  ]
   source                       = "./modules/ingress"
   api_service_name             = module.api.service_name
   api_service_port             = module.api.service_port
@@ -36,6 +77,9 @@ module "ingress" {
 }
 
 module "weekly_download" {
+  depends_on = [
+    kubernetes_namespace.namespace
+  ]
   source                            = "./modules/weekly_download"
   image                             = var.image_weekly_download
   namespace                         = var.namespace

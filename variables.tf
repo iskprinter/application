@@ -1,3 +1,54 @@
+variable "region" {
+  type    = string
+  default = "us-west1"
+}
+
+variable "data_namespace" {
+  type    = string
+  default = "database"
+}
+
+variable "namespace" {
+  type    = string
+  default = "iskprinter"
+}
+
+# Mongodb
+
+variable "mongodb_connection_secret_name" {
+  type    = string
+  default = "mongodb-connection"
+}
+
+variable "mongodb_replicas" {
+  type    = number
+  default = 2
+}
+
+# Neo4j
+
+variable "neo4j_persistent_volume_size" {
+  type    = string
+  default = "10Gi"
+}
+
+variable "neo4j_release_name" {
+  type    = string
+  default = "neo4j"
+}
+
+variable "neo4j_replicas" {
+  type    = number
+  default = 2
+}
+
+variable "neo4j_version" {
+  type    = string
+  default = "4.3.4" # The Neo4j version.
+}
+
+# Secrets
+
 variable "api_client_credentials_secret_key_id" {
   type = string
 }
@@ -10,10 +61,7 @@ variable "api_client_credentials_secret_name" {
   type = string
 }
 
-variable "namespace" {
-  type    = string
-  default = "iskprinter"
-}
+# Misc
 
 variable "google_dns_managed_zone_name" {
   type    = string
@@ -41,9 +89,5 @@ variable "gcp_project" {
 }
 
 variable "mongodb_connection_secret_key_url" {
-  type = string
-}
-
-variable "mongodb_connection_secret_name" {
   type = string
 }
