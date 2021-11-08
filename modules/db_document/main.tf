@@ -227,19 +227,6 @@ resource "kubernetes_manifest" "mongodb" {
   }
 }
 
-# Connection string
-
-resource "kubernetes_secret" "mongodb_connection" {
-  type = "Opaque"
-  metadata {
-    namespace = var.namespace
-    name      = var.mongodb_connection_secret_name
-  }
-  binary_data = {
-    (local.mongodb_connection_secret_key_url) = base64encode("mongodb+srv://${urlencode(local.mongodb_user_api_username)}:${urlencode(random_password.mongodb_user_api_password.result)}@${local.mongodb_resource_name}-svc.${var.namespace}.svc.cluster.local/?ssl=false")
-  }
-}
-
 # Backups
 
 # The replicas are identical, so we only need to back up one
