@@ -13,30 +13,15 @@ resource "kubernetes_namespace" "namespace" {
   }
 }
 
-module "api" {
-  depends_on = [
-    kubernetes_namespace.namespace
-  ]
-  source                                   = "./modules/api"
-  api_client_credentials_secret_key_id     = var.api_client_credentials_secret_key_id
-  api_client_credentials_secret_key_secret = var.api_client_credentials_secret_key_secret
-  api_client_credentials_secret_name       = var.api_client_credentials_secret_name
-  image                                    = var.image_api
-  mongodb_connection_secret_key_url        = var.mongodb_connection_secret_key_url
-  mongodb_connection_secret_name           = var.mongodb_connection_secret_name
-  namespace                                = var.namespace
-}
-
 module "db_document" {
   depends_on = [
     kubernetes_namespace.namespace
   ]
-  source                         = "./modules/db_document"
-  mongodb_connection_secret_name = var.mongodb_connection_secret_name
-  mongodb_replicas               = var.mongodb_replicas
-  namespace                      = var.data_namespace
-  project                        = var.gcp_project
-  region                         = var.region
+  source           = "./modules/db_document"
+  namespace        = var.data_namespace
+  mongodb_replicas = var.mongodb_replicas
+  project          = var.gcp_project
+  region           = var.region
 }
 
 module "db_graph" {
@@ -51,6 +36,29 @@ module "db_graph" {
   neo4j_version                = var.neo4j_version
   project                      = var.gcp_project
   region                       = var.region
+}
+
+module "connections" {
+  source                            = "./modules/connections"
+  mongodb_connection_url            = module.db_document.mongodb_connection_url
+  mongodb_connection_secret_key_url = var.mongodb_connection_secret_key_url
+  mongodb_connection_secret_name    = var.mongodb_connection_secret_name
+  namespace                         = var.namespace
+}
+
+module "api" {
+  depends_on = [
+    kubernetes_namespace.namespace
+  ]
+  source                                   = "./modules/api"
+  api_client_credentials_secret_key_id     = var.api_client_credentials_secret_key_id
+  api_client_credentials_secret_key_secret = var.api_client_credentials_secret_key_secret
+  api_client_credentials_secret_name       = var.api_client_credentials_secret_name
+  image                                    = var.image_api
+  mongodb_connection_secret_key_url        = var.mongodb_connection_secret_key_url
+  mongodb_connection_secret_name           = var.mongodb_connection_secret_name
+  mongodb_connection_secret_version        = module.connections.mongodb_connection_secret_version
+  namespace                                = var.namespace
 }
 
 module "frontend" {

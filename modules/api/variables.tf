@@ -25,3 +25,7 @@ variable "mongodb_connection_secret_name" {
 variable "mongodb_connection_secret_key_url" {
   type = string
 }
+
+variable "mongodb_connection_secret_version" {
+  type = string
+}

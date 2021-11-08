@@ -15,6 +15,10 @@ variable "namespace" {
 
 # Mongodb
 
+variable "mongodb_connection_secret_key_url" {
+  type = string
+}
+
 variable "mongodb_connection_secret_name" {
   type    = string
   default = "mongodb-connection"
@@ -86,8 +90,4 @@ variable "image_weekly_download" {
 variable "gcp_project" {
   type    = string
   default = "cameronhudson8"
-}
-
-variable "mongodb_connection_secret_key_url" {
-  type = string
 }
