@@ -1,6 +1,6 @@
 # iskprinter/application
 
-The stateless application layer
+Terraform configuration to deploy all application-layer ISK Printer components
 
 ## How to use
 
