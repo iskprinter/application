@@ -8,7 +8,7 @@ resource "kubernetes_cron_job" "weekly_download" {
     job_template {
       metadata {
         labels = {
-          "app.kubernetes.io/name" = "weekly-download"
+          "app" = "weekly-download"
         }
       }
       spec {
