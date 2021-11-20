@@ -11,7 +11,7 @@ resource "kubernetes_service" "api" {
   spec {
     type = "ClusterIP"
     selector = {
-      "app.kubernetes.io/name" = "api"
+      "app" = "api"
     }
     port {
       port        = local.service_port
@@ -29,13 +29,13 @@ resource "kubernetes_deployment" "api" {
     replicas = 2
     selector {
       match_labels = {
-        "app.kubernetes.io/name" = "api"
+        "app" = "api"
       }
     }
     template {
       metadata {
         labels = {
-          "app.kubernetes.io/name" = "api"
+          "app" = "api"
         }
         annotations = {
           "mongodbConnectionSecretVersion" = var.mongodb_connection_secret_version

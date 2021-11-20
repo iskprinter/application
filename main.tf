@@ -70,6 +70,15 @@ module "frontend" {
   image     = var.image_frontend
 }
 
+module "acceptance_test" {
+  depends_on = [
+    kubernetes_namespace.namespace
+  ]
+  source    = "./modules/acceptance_test"
+  namespace = var.namespace
+  image     = var.image_acceptance_test
+}
+
 module "ingress" {
   depends_on = [
     kubernetes_namespace.namespace

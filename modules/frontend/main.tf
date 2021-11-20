@@ -11,7 +11,7 @@ resource "kubernetes_service" "frontend" {
   spec {
     type = "ClusterIP"
     selector = {
-      "app.kubernetes.io/name" = "frontend"
+      "app" = "frontend"
     }
     port {
       port        = local.service_port
@@ -29,13 +29,13 @@ resource "kubernetes_deployment" "frontend" {
     replicas = 2
     selector {
       match_labels = {
-        "app.kubernetes.io/name" = "frontend"
+        "app" = "frontend"
       }
     }
     template {
       metadata {
         labels = {
-          "app.kubernetes.io/name" = "frontend"
+          "app" = "frontend"
         }
       }
       spec {
