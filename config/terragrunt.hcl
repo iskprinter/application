@@ -9,5 +9,6 @@ remote_state {
     location = "us-west1"
     bucket = "iskprinter-tf-state-${path_relative_to_include()}"
     prefix = "application"
+    skip_bucket_creation = true
   }
 }
