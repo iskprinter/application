@@ -50,8 +50,10 @@ resource "kubernetes_job" "acceptance_test" {
       spec {
         restart_policy = local.restart_policy
         container {
-          name  = local.name
-          image = var.image
+          name    = local.name
+          image   = var.image
+          command = ["echo"]
+          args    = ["hello world"]
         }
       }
     }
