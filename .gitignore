@@ -1,3 +1,4 @@
 .terraform/
 **/.DS_Store
+**/.terragrunt-cache/
 **/terragrunt_generated_*
