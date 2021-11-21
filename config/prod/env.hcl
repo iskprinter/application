@@ -1,0 +1,3 @@
+inputs = {
+  namespace = "iskprinter-prod"
+}
