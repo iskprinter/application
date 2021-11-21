@@ -13,6 +13,17 @@ remote_state {
   }
 }
 
+terraform {
+  extra_arguments "init_args" {
+    commands = [
+      "init"
+    ]
+    arguments = [
+      "-lockfile=readonly",
+    ]
+  }
+}
+
 inputs = {
   api_client_credentials_secret_namespace    = "secrets"
   api_client_credentials_secret_key_id       = "id"
