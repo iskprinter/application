@@ -6,6 +6,10 @@ variable "api_service_port" {
   type = number
 }
 
+variable "api_host" {
+  type = string
+}
+
 variable "frontend_host" {
   type = string
 }

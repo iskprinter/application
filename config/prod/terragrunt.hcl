@@ -28,4 +28,5 @@ terraform {
 inputs = {
   env_name      = "prod"
   frontend_host = "iskprinter.com"
+  api_host = "api.iskprinter.com"
 }

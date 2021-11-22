@@ -5,3 +5,7 @@ variable "image" {
 variable "namespace" {
   type = string
 }
+
+variable "api_host" {
+  type = string
+}

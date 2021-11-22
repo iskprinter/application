@@ -42,10 +42,9 @@ resource "kubernetes_deployment" "frontend" {
         container {
           name  = "frontend"
           image = var.image
-          env_from {
-            config_map_ref {
-              name = "frontend"
-            }
+          env {
+            name = "BACKEND_URL"
+            value = "https://${api_host}"
           }
           port {
             container_port = local.service_port
@@ -73,15 +72,5 @@ resource "kubernetes_deployment" "frontend" {
         }
       }
     }
-  }
-}
-
-resource "kubernetes_config_map" "frontend" {
-  metadata {
-    namespace = var.namespace
-    name      = "frontend"
-  }
-  data = {
-    "BACKEND_URL" = "https://api.iskprinter.com"
   }
 }

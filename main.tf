@@ -82,6 +82,7 @@ module "frontend" {
   source    = "./modules/frontend"
   image     = var.image_frontend
   namespace = local.namespace
+  api_host  = var.api_host
 }
 
 module "ingress" {
@@ -90,6 +91,7 @@ module "ingress" {
     module.cicd_rbac
   ]
   source                       = "./modules/ingress"
+  api_host                     = var.api_host
   api_service_name             = module.api.service_name
   api_service_port             = module.api.service_port
   frontend_host                = var.frontend_host

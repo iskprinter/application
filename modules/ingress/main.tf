@@ -21,7 +21,7 @@ resource "kubernetes_ingress" "api_iskprinter_com" {
   spec {
     ingress_class_name = "nginx"
     rule {
-      host = "api.iskprinter.com"
+      host = var.api_host
       http {
         path {
           path = "/"
@@ -33,7 +33,7 @@ resource "kubernetes_ingress" "api_iskprinter_com" {
       }
     }
     tls {
-      hosts       = ["api.iskprinter.com"]
+      hosts       = [var.api_host]
       secret_name = "tls-api-iskprinter-com"
     }
   }
