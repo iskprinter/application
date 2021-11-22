@@ -3,20 +3,9 @@ module "namespaces" {
   namespace = var.namespace
 }
 
-module "cicd_rbac" {
-  depends_on = [
-    module.namespaces
-  ]
-  source         = "./modules/cicd_rbac"
-  cicd_bot_name  = var.cicd_bot_name
-  cicd_namespace = var.cicd_namespace
-  namespace      = var.namespace
-}
-
 module "db_document" {
   depends_on = [
-    module.namespaces,
-    module.cicd_rbac
+    module.namespaces
   ]
   source           = "./modules/db_document"
   gcp_project      = var.gcp_project
@@ -27,8 +16,7 @@ module "db_document" {
 
 module "db_graph" {
   depends_on = [
-    module.namespaces,
-    module.cicd_rbac
+    module.namespaces
   ]
   source                       = "./modules/db_graph"
   gcp_project                  = var.gcp_project
@@ -42,8 +30,7 @@ module "db_graph" {
 
 module "api" {
   depends_on = [
-    module.namespaces,
-    module.cicd_rbac
+    module.namespaces
   ]
   source                                   = "./modules/api"
   api_client_credentials_secret_key_id     = var.api_client_credentials_secret_key_id
@@ -59,8 +46,7 @@ module "api" {
 
 module "weekly_download" {
   depends_on = [
-    module.namespaces,
-    module.cicd_rbac
+    module.namespaces
   ]
   source                            = "./modules/weekly_download"
   image                             = var.image_weekly_download
@@ -72,8 +58,7 @@ module "weekly_download" {
 
 module "frontend" {
   depends_on = [
-    module.namespaces,
-    module.cicd_rbac
+    module.namespaces
   ]
   source    = "./modules/frontend"
   image     = var.image_frontend
@@ -83,8 +68,7 @@ module "frontend" {
 
 module "ingress" {
   depends_on = [
-    module.namespaces,
-    module.cicd_rbac
+    module.namespaces
   ]
   source                       = "./modules/ingress"
   api_host                     = var.api_host
@@ -101,7 +85,12 @@ module "ingress" {
 module "acceptance_test" {
   depends_on = [
     module.namespaces,
-    module.cicd_rbac
+    module.db_document,
+    module.db_graph,
+    module.api,
+    module.weekly_download,
+    module.frontend,
+    module.ingress,
   ]
   source    = "./modules/acceptance_test"
   image     = var.image_acceptance_test
