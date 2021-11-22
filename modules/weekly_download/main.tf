@@ -5,11 +5,17 @@ resource "kubernetes_cron_job" "weekly_download" {
     annotations = {
       "mongodbConnectionSecretVersion" = var.mongodb_connection_secret_version
     }
+    labels = {
+      "app" = "weekly-download"
+    }
   }
   spec {
     schedule = "3 19 * * 4"
     job_template {
       metadata {
+        annotations = {
+          "mongodbConnectionSecretVersion" = var.mongodb_connection_secret_version
+        }
         labels = {
           "app" = "weekly-download"
         }
