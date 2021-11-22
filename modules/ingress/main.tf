@@ -5,33 +5,6 @@ data "kubernetes_service" "nginx" {
   }
 }
 
-resource "google_dns_record_set" "api_iskprinter" {
-  project      = var.gcp_project
-  managed_zone = var.google_dns_managed_zone_name
-  name         = "api.iskprinter.com."
-  type         = "A"
-  rrdatas      = [data.kubernetes_service.nginx.status[0].load_balancer[0].ingress[0].ip]
-  ttl          = 300
-}
-
-resource "google_dns_record_set" "iskprinter" {
-  project      = var.gcp_project
-  managed_zone = var.google_dns_managed_zone_name
-  name         = "iskprinter.com."
-  type         = "A"
-  rrdatas      = [data.kubernetes_service.nginx.status[0].load_balancer[0].ingress[0].ip]
-  ttl          = 300
-}
-
-resource "google_dns_record_set" "www_iskprinter" {
-  project      = var.gcp_project
-  managed_zone = var.google_dns_managed_zone_name
-  name         = "www.iskprinter.com."
-  type         = "A"
-  rrdatas      = [data.kubernetes_service.nginx.status[0].load_balancer[0].ingress[0].ip]
-  ttl          = 300
-}
-
 resource "kubernetes_ingress" "api_iskprinter_com" {
   metadata {
     namespace = var.namespace
