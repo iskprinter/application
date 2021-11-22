@@ -1,4 +1,4 @@
-variable "image_frontend" {
+variable "image" {
   type = string
 }
 

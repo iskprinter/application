@@ -26,7 +26,7 @@ resource "kubernetes_cron_job" "acceptance_test" {
             restart_policy = local.restart_policy
             container {
               name  = local.name
-              image = var.image_acceptance_test
+              image = var.image
             }
           }
         }
@@ -51,7 +51,7 @@ resource "kubernetes_job" "acceptance_test" {
         restart_policy = local.restart_policy
         container {
           name    = local.name
-          image   = var.image_acceptance_test
+          image   = var.image
           command = ["echo"]
           args    = ["hello world"]
         }

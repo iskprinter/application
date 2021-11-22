@@ -1,4 +1,4 @@
-variable "image_weekly_download" {
+variable "image" {
   type = string
 }
 

@@ -1,3 +1,0 @@
-inputs = {
-  namespace = "iskprinter-prod"
-}
