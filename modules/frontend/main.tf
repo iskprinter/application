@@ -44,7 +44,7 @@ resource "kubernetes_deployment" "frontend" {
           image = var.image
           env {
             name = "BACKEND_URL"
-            value = "https://${api_host}"
+            value = "https://${var.api_host}"
           }
           port {
             container_port = local.service_port

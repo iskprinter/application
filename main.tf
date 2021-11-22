@@ -1,10 +1,6 @@
-locals {
-  namespace = "iskprinter-${var.env_name}"
-}
-
 module "namespaces" {
   source    = "./modules/namespaces"
-  namespace = local.namespace
+  namespace = var.namespace
 }
 
 module "cicd_rbac" {
@@ -14,7 +10,7 @@ module "cicd_rbac" {
   source         = "./modules/cicd_rbac"
   cicd_bot_name  = var.cicd_bot_name
   cicd_namespace = var.cicd_namespace
-  namespace      = local.namespace
+  namespace      = var.namespace
 }
 
 module "db_document" {
@@ -25,7 +21,7 @@ module "db_document" {
   source           = "./modules/db_document"
   gcp_project      = var.gcp_project
   mongodb_replicas = var.mongodb_replicas
-  namespace        = local.namespace
+  namespace        = var.namespace
   region           = var.region
 }
 
@@ -36,7 +32,7 @@ module "db_graph" {
   ]
   source                       = "./modules/db_graph"
   gcp_project                  = var.gcp_project
-  namespace                    = local.namespace
+  namespace                    = var.namespace
   neo4j_persistent_volume_size = var.neo4j_persistent_volume_size
   neo4j_release_name           = var.neo4j_release_name
   neo4j_replicas               = var.neo4j_replicas
@@ -58,7 +54,7 @@ module "api" {
   mongodb_connection_secret_key_url        = module.db_document.mongodb_connection_secret_key_url
   mongodb_connection_secret_name           = module.db_document.mongodb_connection_secret_name
   mongodb_connection_secret_version        = module.db_document.mongodb_connection_secret_version
-  namespace                                = local.namespace
+  namespace                                = var.namespace
 }
 
 module "weekly_download" {
@@ -71,7 +67,7 @@ module "weekly_download" {
   mongodb_connection_secret_key_url = module.db_document.mongodb_connection_secret_key_url
   mongodb_connection_secret_name    = module.db_document.mongodb_connection_secret_name
   mongodb_connection_secret_version = module.db_document.mongodb_connection_secret_version
-  namespace                         = local.namespace
+  namespace                         = var.namespace
 }
 
 module "frontend" {
@@ -81,7 +77,7 @@ module "frontend" {
   ]
   source    = "./modules/frontend"
   image     = var.image_frontend
-  namespace = local.namespace
+  namespace = var.namespace
   api_host  = var.api_host
 }
 
@@ -99,7 +95,7 @@ module "ingress" {
   frontend_service_port        = module.frontend.service_port
   gcp_project                  = var.gcp_project
   google_dns_managed_zone_name = var.google_dns_managed_zone_name
-  namespace                    = local.namespace
+  namespace                    = var.namespace
 }
 
 module "acceptance_test" {
@@ -109,5 +105,5 @@ module "acceptance_test" {
   ]
   source    = "./modules/acceptance_test"
   image     = var.image_acceptance_test
-  namespace = local.namespace
+  namespace = var.namespace
 }

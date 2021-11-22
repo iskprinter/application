@@ -6,6 +6,7 @@ data "kubernetes_service" "nginx" {
 }
 
 resource "kubernetes_ingress" "api_iskprinter_com" {
+  wait_for_load_balancer = true
   metadata {
     namespace = var.namespace
     name      = "api-iskprinter-com"
@@ -40,6 +41,7 @@ resource "kubernetes_ingress" "api_iskprinter_com" {
 }
 
 resource "kubernetes_ingress" "iskprinter_com" {
+  wait_for_load_balancer = true
   metadata {
     namespace = var.namespace
     name      = "iskprinter-com"
