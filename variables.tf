@@ -6,7 +6,7 @@ variable "env_name" {
 
 variable "image_acceptance_test" {
   type    = string
-  default = "us-west1-docker.pkg.dev/cameronhudson8/iskprinter/acceptance-test:6dca43ce9b0e32918f1189670d674598d7840442"
+  default = "us-west1-docker.pkg.dev/cameronhudson8/iskprinter/acceptance-test:1ef980b5645bebb21be394055fad80427951edd4"
 }
 
 variable "image_api" {

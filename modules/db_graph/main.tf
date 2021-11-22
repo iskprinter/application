@@ -15,7 +15,7 @@ resource "helm_release" "neo4j" {
   chart            = "https://github.com/neo4j-contrib/neo4j-helm/releases/download/${var.neo4j_version}/${local.neo4j_chart_name}-${var.neo4j_version}.tgz"
   version          = var.neo4j_version
   namespace        = var.namespace
-  create_namespace = true
+  create_namespace = false
   set {
     name  = "acceptLicenseAgreement"
     value = "yes"

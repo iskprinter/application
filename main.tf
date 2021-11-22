@@ -93,7 +93,7 @@ module "ingress" {
   api_service_name             = module.api.service_name
   api_service_port             = module.api.service_port
   frontend_service_name        = module.frontend.service_name
-  frontend_service_port        = module.api.service_port
+  frontend_service_port        = module.frontend.service_port
   gcp_project                  = var.gcp_project
   google_dns_managed_zone_name = var.google_dns_managed_zone_name
   namespace                    = local.namespace
