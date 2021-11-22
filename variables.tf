@@ -2,6 +2,10 @@ variable "env_name" {
   type = string
 }
 
+variable "frontend_host" {
+  type = string
+}
+
 # Images
 
 variable "image_acceptance_test" {

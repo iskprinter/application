@@ -92,6 +92,7 @@ module "ingress" {
   source                       = "./modules/ingress"
   api_service_name             = module.api.service_name
   api_service_port             = module.api.service_port
+  frontend_host                = var.frontend_host
   frontend_service_name        = module.frontend.service_name
   frontend_service_port        = module.frontend.service_port
   gcp_project                  = var.gcp_project

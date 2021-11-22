@@ -8,7 +8,7 @@ remote_state {
     project = "cameronhudson8"
     location = "us-west1"
     bucket = "iskprinter-tf-state"
-    prefix = get_env("TF_VAR_env_name")
+    prefix = get_env("env_name")
     skip_bucket_creation = false
   }
 }
@@ -25,4 +25,7 @@ terraform {
   source = "../..//."
 }
 
-inputs = {}
+inputs = {
+  env_name      = "prod"
+  frontend_host = "iskprinter.com"
+}
