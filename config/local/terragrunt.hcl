@@ -8,8 +8,8 @@ remote_state {
     project              = "cameronhudson8"
     location             = "us-west1"
     bucket               = "iskprinter-tf-state"
-    prefix               = "application/pr-${get_env("PR_NUMBER")}"
-    skip_bucket_creation = false
+    prefix               = "application/local/${run_cmd("whoami")}"
+    skip_bucket_creation = true
   }
 }
 
@@ -26,7 +26,7 @@ terraform {
 }
 
 inputs = {
-  api_host      = "api.pr-${get_env("PR_NUMBER")}.iskprinter.com"
-  namespace     = "iskprinter-pr-${get_env("PR_NUMBER")}"
-  frontend_host = "pr-${get_env("PR_NUMBER")}.iskprinter.com"
+  api_host      = "api.local.iskprinter.com"
+  namespace     = "iskprinter-local"
+  frontend_host = "local.iskprinter.com"
 }
