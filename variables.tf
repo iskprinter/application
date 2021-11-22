@@ -1,4 +1,12 @@
-variable "env_name" {
+variable "namespace" {
+  type = string
+}
+
+variable "api_host" {
+  type = string
+}
+
+variable "frontend_host" {
   type = string
 }
 

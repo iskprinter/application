@@ -5,10 +5,10 @@ remote_state {
     if_exists = "overwrite_terragrunt"
   }
   config = {
-    project = "cameronhudson8"
-    location = "us-west1"
-    bucket = "iskprinter-tf-state"
-    prefix = get_env("TF_VAR_env_name")
+    project              = "cameronhudson8"
+    location             = "us-west1"
+    bucket               = "iskprinter-tf-state"
+    prefix               = "application/prod"
     skip_bucket_creation = false
   }
 }
@@ -25,4 +25,8 @@ terraform {
   source = "../..//."
 }
 
-inputs = {}
+inputs = {
+  api_host      = "api.iskprinter.com"
+  namespace     = "iskprinter-prod"
+  frontend_host = "iskprinter.com"
+}
