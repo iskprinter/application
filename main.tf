@@ -84,7 +84,13 @@ module "ingress" {
 
 module "acceptance_test" {
   depends_on = [
-    module.namespaces
+    module.namespaces,
+    module.db_document,
+    module.db_graph,
+    module.api,
+    module.weekly_download,
+    module.frontend,
+    module.ingress,
   ]
   source    = "./modules/acceptance_test"
   image     = var.image_acceptance_test
