@@ -92,7 +92,8 @@ module "acceptance_test" {
     module.frontend,
     module.ingress,
   ]
-  source    = "./modules/acceptance_test"
-  image     = var.image_acceptance_test
-  namespace = var.namespace
+  source        = "./modules/acceptance_test"
+  image         = var.image_acceptance_test
+  namespace     = var.namespace
+  frontend_host = var.frontend_host
 }

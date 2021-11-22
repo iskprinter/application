@@ -25,8 +25,12 @@ resource "kubernetes_cron_job" "acceptance_test" {
           spec {
             restart_policy = local.restart_policy
             container {
-              name    = local.name
-              image   = var.image
+              name  = local.name
+              image = var.image
+              env {
+                name  = "FRONTEND_HOST"
+                value = var.frontend_host
+              }
             }
           }
         }
@@ -50,8 +54,12 @@ resource "kubernetes_job" "acceptance_test" {
       spec {
         restart_policy = local.restart_policy
         container {
-          name    = local.name
-          image   = var.image
+          name  = local.name
+          image = var.image
+          env {
+            name  = "FRONTEND_HOST"
+            value = var.frontend_host
+          }
         }
       }
     }
