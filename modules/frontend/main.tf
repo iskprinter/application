@@ -41,7 +41,7 @@ resource "kubernetes_deployment" "frontend" {
       spec {
         container {
           name  = "frontend"
-          image = var.image_frontend
+          image = var.image
           env_from {
             config_map_ref {
               name = "frontend"

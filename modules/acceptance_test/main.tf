@@ -1,5 +1,5 @@
 locals {
-  backoff_limit  = 1
+  backoff_limit  = 0
   name           = "acceptance-test"
   restart_policy = "Never"
 }
@@ -25,8 +25,8 @@ resource "kubernetes_cron_job" "acceptance_test" {
           spec {
             restart_policy = local.restart_policy
             container {
-              name  = local.name
-              image = var.image_acceptance_test
+              name    = local.name
+              image   = var.image
             }
           }
         }
@@ -51,9 +51,7 @@ resource "kubernetes_job" "acceptance_test" {
         restart_policy = local.restart_policy
         container {
           name    = local.name
-          image   = var.image_acceptance_test
-          command = ["echo"]
-          args    = ["hello world"]
+          image   = var.image
         }
       }
     }

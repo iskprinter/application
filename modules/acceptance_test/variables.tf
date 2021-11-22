@@ -1,4 +1,4 @@
-variable "image_acceptance_test" {
+variable "image" {
   type = string
 }
 

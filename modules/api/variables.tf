@@ -14,7 +14,7 @@ variable "api_client_credentials_secret_key_secret" {
   type = string
 }
 
-variable "image_api" {
+variable "image" {
   type = string
 }
 

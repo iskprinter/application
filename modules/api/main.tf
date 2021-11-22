@@ -65,7 +65,7 @@ resource "kubernetes_deployment" "api" {
       spec {
         container {
           name  = "api"
-          image = var.image_api
+          image = var.image
           env {
             name = "CLIENT_ID"
             value_from {

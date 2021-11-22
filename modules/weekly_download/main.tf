@@ -23,7 +23,7 @@ resource "kubernetes_cron_job" "weekly_download" {
             restart_policy = "OnFailure"
             container {
               name  = "weekly-download"
-              image = var.image_weekly_download
+              image = var.image
               env {
                 name = "DB_URL"
                 value_from {

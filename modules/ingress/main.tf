@@ -38,9 +38,11 @@ resource "kubernetes_ingress" "api_iskprinter_com" {
     name      = "api-iskprinter-com"
     annotations = {
       "cert-manager.io/cluster-issuer"                    = "lets-encrypt-prod"
-      "nginx.ingress.kubernetes.io/configuration-snippet" = "more_set_input_headers \"strict-transport-security: max-age=63072000; includeSubDomains; preload\";"
-      "nginx.ingress.kubernetes.io/enable-cors"           = "true"
+      "nginx.ingress.kubernetes.io/configuration-snippet" = <<-EOF
+        more_set_input_headers  "strict-transport-security: max-age=63072000; includeSubDomains; preload";
+        EOF
       "nginx.ingress.kubernetes.io/cors-allow-origin"     = "https://iskprinter.com"
+      "nginx.ingress.kubernetes.io/enable-cors"           = "true"
     }
   }
   wait_for_load_balancer = true
@@ -72,7 +74,11 @@ resource "kubernetes_ingress" "iskprinter_com" {
     annotations = {
       "cert-manager.io/cluster-issuer"                    = "lets-encrypt-prod"
       "nginx.ingress.kubernetes.io/configuration-snippet" = "more_set_input_headers \"strict-transport-security: max-age=63072000; includeSubDomains; preload\";"
-      "nginx.ingress.kubernetes.io/server-snippet"        = "if ($host ~ \"www.iskprinter.com\") { return 308 https://iskprinter.com$request_uri; }"
+      "nginx.ingress.kubernetes.io/server-snippet"        = <<-EOF
+        if ($host ~ "www.iskprinter.com") {
+          return 308 "https://iskprinter.com$request_uri";
+        }
+        EOF
     }
   }
   wait_for_load_balancer = true
