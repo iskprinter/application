@@ -22,11 +22,40 @@ terraform {
       "-lockfile=readonly",
     ]
   }
-  source = "../..//."
 }
 
-inputs = {
-  api_host      = "api.local.iskprinter.com"
-  namespace     = "iskprinter-local"
-  frontend_host = "local.iskprinter.com"
+generate "main" {
+  path      = "terragrunt_generated_main.tf"
+  if_exists = "overwrite_terragrunt"
+  contents = <<-EOF
+
+    data "google_client_config" "provider" {}
+
+    data "google_container_cluster" "general_purpose" {
+      project  = "cameronhudson8"
+      location = "us-west1"
+      name     = "general-purpose-cluster"
+    }
+
+    provider "kubernetes" {
+      config_context = "minikube"
+      experiments {
+        manifest_resource = true
+      }
+    }
+
+    provider "helm" {
+      kubernetes {
+        config_context = "minikube"
+      }
+    }
+
+    module "main" {
+      source = "../../"
+      api_host      = "api.local.iskprinter.com"
+      namespace     = "iskprinter-local"
+      frontend_host = "local.iskprinter.com"
+    }
+
+    EOF
 }
