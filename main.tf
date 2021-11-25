@@ -3,15 +3,26 @@ module "namespaces" {
   namespace = var.namespace
 }
 
+module "operator_mongodb" {
+  # This currently causes an error due to a bug in the kubectl provider
+  # depends_on = [  
+  #   module.namespaces
+  # ]
+  source    = "./modules/operator_mongodb"
+  namespace = var.namespace
+}
+
 module "db_document" {
   depends_on = [
-    module.namespaces
+    module.namespaces,
+    module.operator_mongodb
   ]
-  source           = "./modules/db_document"
-  gcp_project      = var.gcp_project
-  mongodb_replicas = var.mongodb_replicas
-  namespace        = var.namespace
-  region           = var.region
+  source                 = "./modules/db_document"
+  gcp_project            = var.gcp_project
+  replica_count          = var.mongodb_replica_count
+  persistent_volume_size = var.mongodb_persistent_volume_size
+  namespace              = var.namespace
+  region                 = var.region
 }
 
 module "db_graph" {
@@ -21,9 +32,8 @@ module "db_graph" {
   source                       = "./modules/db_graph"
   gcp_project                  = var.gcp_project
   namespace                    = var.namespace
-  neo4j_persistent_volume_size = var.neo4j_persistent_volume_size
-  neo4j_release_name           = var.neo4j_release_name
-  neo4j_replicas               = var.neo4j_replicas
+  persistent_volume_size = var.neo4j_persistent_volume_size
+  replica_count          = var.neo4j_replica_count
   neo4j_version                = var.neo4j_version
   region                       = var.region
 }

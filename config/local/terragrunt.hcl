@@ -8,7 +8,7 @@ remote_state {
     project              = "cameronhudson8"
     location             = "us-west1"
     bucket               = "iskprinter-tf-state"
-    prefix               = "application/local/${run_cmd("whoami")}"
+    prefix               = "application/local/${run_cmd("--terragrunt-quiet", "whoami")}"
     skip_bucket_creation = true
   }
 }
@@ -22,12 +22,33 @@ terraform {
       "-lockfile=readonly",
     ]
   }
+  source = "../..//."
 }
 
-generate "main" {
-  path      = "terragrunt_generated_main.tf"
+inputs = {
+  api_host                       = "api.local.iskprinter.com"
+  frontend_host                  = "local.iskprinter.com"
+  mongodb_persistent_volume_size = "1Gi"
+  mongodb_replica_count          = 1
+  namespace                      = "iskprinter-local"
+  neo4j_persistent_volume_size   = "1Gi"
+  neo4j_replica_count            = 1
+}
+
+generate "providers" {
+  path      = "terragrunt_generated_providers.tf"
   if_exists = "overwrite_terragrunt"
   contents = <<-EOF
+
+    terraform {
+      required_version = ">= 0.13"
+      required_providers {
+        kubectl = {
+          source  = "gavinbunney/kubectl"
+          version = ">= 1.7.0"
+        }
+      }
+    }
 
     data "google_client_config" "provider" {}
 
@@ -37,6 +58,16 @@ generate "main" {
       name     = "general-purpose-cluster"
     }
 
+    provider "helm" {
+      kubernetes {
+        config_context = "minikube"
+      }
+    }
+
+    provider "kubectl" {
+      config_context = "minikube"
+    }
+
     provider "kubernetes" {
       config_context = "minikube"
       experiments {
@@ -44,18 +75,6 @@ generate "main" {
       }
     }
 
-    provider "helm" {
-      kubernetes {
-        config_context = "minikube"
-      }
-    }
+  EOF
 
-    module "main" {
-      source = "../../"
-      api_host      = "api.local.iskprinter.com"
-      namespace     = "iskprinter-local"
-      frontend_host = "local.iskprinter.com"
-    }
-
-    EOF
 }

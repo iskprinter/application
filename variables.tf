@@ -1,13 +1,29 @@
-variable "namespace" {
-  type = string
-}
-
 variable "api_host" {
   type = string
 }
 
 variable "frontend_host" {
   type = string
+}
+
+variable "mongodb_replica_count" {
+  type = number
+}
+
+variable "mongodb_persistent_volume_size" {
+  type = string
+}
+
+variable "namespace" {
+  type = string
+}
+
+variable "neo4j_persistent_volume_size" {
+  type = string
+}
+
+variable "neo4j_replica_count" {
+  type = number
 }
 
 # Images
@@ -72,26 +88,6 @@ variable "gcp_project" {
 variable "google_dns_managed_zone_name" {
   type    = string
   default = "iskprinter-com"
-}
-
-variable "mongodb_replicas" {
-  type    = number
-  default = 2
-}
-
-variable "neo4j_persistent_volume_size" {
-  type    = string
-  default = "10Gi"
-}
-
-variable "neo4j_release_name" {
-  type    = string
-  default = "neo4j"
-}
-
-variable "neo4j_replicas" {
-  type    = number
-  default = 2
 }
 
 variable "neo4j_version" {
