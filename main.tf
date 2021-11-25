@@ -29,29 +29,27 @@ module "db_graph" {
   depends_on = [
     module.namespaces
   ]
-  source                       = "./modules/db_graph"
-  gcp_project                  = var.gcp_project
-  namespace                    = var.namespace
+  source                 = "./modules/db_graph"
+  gcp_project            = var.gcp_project
+  namespace              = var.namespace
   persistent_volume_size = var.neo4j_persistent_volume_size
   replica_count          = var.neo4j_replica_count
-  neo4j_version                = var.neo4j_version
-  region                       = var.region
+  neo4j_version          = var.neo4j_version
+  region                 = var.region
 }
 
 module "api" {
   depends_on = [
     module.namespaces
   ]
-  source                                   = "./modules/api"
-  api_client_credentials_secret_key_id     = var.api_client_credentials_secret_key_id
-  api_client_credentials_secret_key_secret = var.api_client_credentials_secret_key_secret
-  api_client_credentials_secret_name       = var.api_client_credentials_secret_name
-  api_client_credentials_secret_namespace  = var.api_client_credentials_secret_namespace
-  image                                    = var.image_api
-  mongodb_connection_secret_key_url        = module.db_document.mongodb_connection_secret_key_url
-  mongodb_connection_secret_name           = module.db_document.mongodb_connection_secret_name
-  mongodb_connection_secret_version        = module.db_document.mongodb_connection_secret_version
-  namespace                                = var.namespace
+  source                            = "./modules/api"
+  api_client_id                     = var.api_client_id
+  api_client_secret                 = var.api_client_secret
+  image                             = var.image_api
+  mongodb_connection_secret_key_url = module.db_document.mongodb_connection_secret_key_url
+  mongodb_connection_secret_name    = module.db_document.mongodb_connection_secret_name
+  mongodb_connection_secret_version = module.db_document.mongodb_connection_secret_version
+  namespace                         = var.namespace
 }
 
 module "weekly_download" {

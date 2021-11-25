@@ -1,3 +1,15 @@
+# Variables provided by CI/CD
+
+variable "api_client_id" {
+  type = string
+}
+
+variable "api_client_secret" {
+  type = string
+}
+
+# Variables provided by Terragrunt config
+
 variable "api_host" {
   type = string
 }
@@ -49,26 +61,6 @@ variable "image_weekly_download" {
 }
 
 # Defaults
-
-variable "api_client_credentials_secret_namespace" {
-  type    = string
-  default = "secrets"
-}
-
-variable "api_client_credentials_secret_key_id" {
-  type    = string
-  default = "id"
-}
-
-variable "api_client_credentials_secret_key_secret" {
-  type    = string
-  default = "secret"
-}
-
-variable "api_client_credentials_secret_name" {
-  type    = string
-  default = "api-client-credentials"
-}
 
 variable "cicd_namespace" {
   type    = string

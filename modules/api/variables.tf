@@ -1,16 +1,8 @@
-variable "api_client_credentials_secret_namespace" {
+variable "api_client_id" {
   type = string
 }
 
-variable "api_client_credentials_secret_name" {
-  type = string
-}
-
-variable "api_client_credentials_secret_key_id" {
-  type = string
-}
-
-variable "api_client_credentials_secret_key_secret" {
+variable "api_client_secret" {
   type = string
 }
 

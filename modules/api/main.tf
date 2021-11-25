@@ -5,21 +5,14 @@ locals {
   api_client_credentials_secret_key_secret = "secret"
 }
 
-data "kubernetes_secret" "api_client_credentials" {
-  metadata {
-    namespace = var.api_client_credentials_secret_namespace
-    name      = var.api_client_credentials_secret_name
-  }
-}
-
 resource "kubernetes_secret" "api_client_credentials" {
   metadata {
     namespace = var.namespace
-    name      = var.api_client_credentials_secret_name
+    name      = "api-client-credentials"
   }
   data = {
-    (local.api_client_credentials_secret_key_id)     = data.kubernetes_secret.api_client_credentials.data[var.api_client_credentials_secret_key_id]
-    (local.api_client_credentials_secret_key_secret) = data.kubernetes_secret.api_client_credentials.data[var.api_client_credentials_secret_key_secret]
+    (local.api_client_credentials_secret_key_id)     = var.api_client_id
+    (local.api_client_credentials_secret_key_secret) = var.api_client_secret
   }
 }
 
