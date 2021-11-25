@@ -139,6 +139,9 @@ resource "kubectl_manifest" "mongodb" {
           }
           volumeClaimTemplates = [
             {
+              metadata = {
+                name = "mongodb"
+              }
               spec = {
                 accessModes = ["ReadWriteOnce"]
                 resources = {
