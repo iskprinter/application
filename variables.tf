@@ -1,6 +1,14 @@
-variable "namespace" {
+# Variables provided by CI/CD
+
+variable "api_client_id" {
   type = string
 }
+
+variable "api_client_secret" {
+  type = string
+}
+
+# Variables provided by Terragrunt config
 
 variable "api_host" {
   type = string
@@ -8,6 +16,26 @@ variable "api_host" {
 
 variable "frontend_host" {
   type = string
+}
+
+variable "mongodb_replica_count" {
+  type = number
+}
+
+variable "mongodb_persistent_volume_size" {
+  type = string
+}
+
+variable "namespace" {
+  type = string
+}
+
+variable "neo4j_persistent_volume_size" {
+  type = string
+}
+
+variable "neo4j_replica_count" {
+  type = number
 }
 
 # Images
@@ -34,26 +62,6 @@ variable "image_weekly_download" {
 
 # Defaults
 
-variable "api_client_credentials_secret_namespace" {
-  type    = string
-  default = "secrets"
-}
-
-variable "api_client_credentials_secret_key_id" {
-  type    = string
-  default = "id"
-}
-
-variable "api_client_credentials_secret_key_secret" {
-  type    = string
-  default = "secret"
-}
-
-variable "api_client_credentials_secret_name" {
-  type    = string
-  default = "api-client-credentials"
-}
-
 variable "cicd_namespace" {
   type    = string
   default = "tekton-pipelines"
@@ -72,26 +80,6 @@ variable "gcp_project" {
 variable "google_dns_managed_zone_name" {
   type    = string
   default = "iskprinter-com"
-}
-
-variable "mongodb_replicas" {
-  type    = number
-  default = 2
-}
-
-variable "neo4j_persistent_volume_size" {
-  type    = string
-  default = "10Gi"
-}
-
-variable "neo4j_release_name" {
-  type    = string
-  default = "neo4j"
-}
-
-variable "neo4j_replicas" {
-  type    = number
-  default = 2
 }
 
 variable "neo4j_version" {

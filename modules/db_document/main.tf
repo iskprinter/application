@@ -5,89 +5,6 @@ locals {
   mongodb_resource_name             = "mongodb"
 }
 
-# Namespace-specific RBAC from operator repository
-
-## mongodb_kubernetes_operator/config/rbac/service_account.yaml
-resource "kubernetes_service_account" "mongodb_kubernetes_operator" {
-  metadata {
-    namespace = var.namespace
-    name      = "mongodb-kubernetes-operator"
-  }
-}
-
-## mongodb_kubernetes_operator/config/rbac/role.yaml, object 1
-resource "kubernetes_role" "mongodb_kubernetes_operator" {
-  metadata {
-    namespace = var.namespace
-    name      = "mongodb-kubernetes-operator"
-  }
-  rule {
-    api_groups = [""]
-    resources = [
-      "pods",
-      "services",
-      "configmaps",
-      "secrets"
-    ]
-    verbs = [
-      "create",
-      "delete",
-      "get",
-      "list",
-      "patch",
-      "update",
-      "watch"
-    ]
-  }
-  rule {
-    api_groups = ["apps"]
-    resources  = ["statefulsets"]
-    verbs = [
-      "create",
-      "delete",
-      "get",
-      "list",
-      "patch",
-      "update",
-      "watch"
-    ]
-  }
-  rule {
-    api_groups = ["mongodbcommunity.mongodb.com"]
-    resources = [
-      "mongodbcommunity",
-      "mongodbcommunity/status",
-      "mongodbcommunity/spec",
-      "mongodbcommunity/finalizers"
-    ]
-    verbs = [
-      "get",
-      "patch",
-      "list",
-      "update",
-      "watch"
-    ]
-  }
-}
-
-## mongodb_kubernetes_operator/config/rbac/role_binding.yaml
-resource "kubernetes_role_binding" "mongodb_kubernetes_operator" {
-  metadata {
-    namespace = var.namespace
-    name      = "mongodb-kubernetes-operator"
-  }
-  subject {
-    kind      = "ServiceAccount"
-    namespace = var.namespace
-    name      = kubernetes_service_account.mongodb_kubernetes_operator.metadata[0].name
-  }
-  role_ref {
-    api_group = "rbac.authorization.k8s.io"
-    kind      = "Role"
-    name      = kubernetes_role.mongodb_kubernetes_operator.metadata[0].name
-  }
-}
-
 # Secrets
 
 resource "random_password" "mongodb_user_admin_password" {
@@ -132,13 +49,8 @@ resource "kubernetes_secret" "mongodb_user_api_credentials" {
 
 # Statefulset
 
-resource "kubernetes_manifest" "mongodb" {
-  depends_on = [
-    kubernetes_service_account.mongodb_kubernetes_operator,
-    kubernetes_role.mongodb_kubernetes_operator,
-    kubernetes_role_binding.mongodb_kubernetes_operator
-  ]
-  manifest = {
+resource "kubectl_manifest" "mongodb" {
+  yaml_body = yamlencode({
     apiVersion = "mongodbcommunity.mongodb.com/v1"
     kind       = "MongoDBCommunity"
     metadata = {
@@ -150,7 +62,7 @@ resource "kubernetes_manifest" "mongodb" {
       }
     }
     spec = {
-      members = var.mongodb_replicas
+      members = var.replica_count
       type    = "ReplicaSet"
       version = "4.2.6"
       security = {
@@ -225,10 +137,22 @@ resource "kubernetes_manifest" "mongodb" {
               ]
             }
           }
+          volumeClaimTemplates = [
+            {
+              spec = {
+                accessModes = ["ReadWriteOnce"]
+                resources = {
+                  requests = {
+                    storage = var.persistent_volume_size
+                  }
+                }
+              }
+            }
+          ]
         }
       }
     }
-  }
+  })
 }
 
 resource "kubernetes_secret" "mongodb_connection" {

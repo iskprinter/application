@@ -3,45 +3,53 @@ module "namespaces" {
   namespace = var.namespace
 }
 
+module "operator_mongodb" {
+  # This currently causes an error due to a bug in the kubectl provider
+  # depends_on = [  
+  #   module.namespaces
+  # ]
+  source    = "./modules/operator_mongodb"
+  namespace = var.namespace
+}
+
 module "db_document" {
   depends_on = [
-    module.namespaces
+    module.namespaces,
+    module.operator_mongodb
   ]
-  source           = "./modules/db_document"
-  gcp_project      = var.gcp_project
-  mongodb_replicas = var.mongodb_replicas
-  namespace        = var.namespace
-  region           = var.region
+  source                 = "./modules/db_document"
+  gcp_project            = var.gcp_project
+  replica_count          = var.mongodb_replica_count
+  persistent_volume_size = var.mongodb_persistent_volume_size
+  namespace              = var.namespace
+  region                 = var.region
 }
 
 module "db_graph" {
   depends_on = [
     module.namespaces
   ]
-  source                       = "./modules/db_graph"
-  gcp_project                  = var.gcp_project
-  namespace                    = var.namespace
-  neo4j_persistent_volume_size = var.neo4j_persistent_volume_size
-  neo4j_release_name           = var.neo4j_release_name
-  neo4j_replicas               = var.neo4j_replicas
-  neo4j_version                = var.neo4j_version
-  region                       = var.region
+  source                 = "./modules/db_graph"
+  gcp_project            = var.gcp_project
+  namespace              = var.namespace
+  persistent_volume_size = var.neo4j_persistent_volume_size
+  replica_count          = var.neo4j_replica_count
+  neo4j_version          = var.neo4j_version
+  region                 = var.region
 }
 
 module "api" {
   depends_on = [
     module.namespaces
   ]
-  source                                   = "./modules/api"
-  api_client_credentials_secret_key_id     = var.api_client_credentials_secret_key_id
-  api_client_credentials_secret_key_secret = var.api_client_credentials_secret_key_secret
-  api_client_credentials_secret_name       = var.api_client_credentials_secret_name
-  api_client_credentials_secret_namespace  = var.api_client_credentials_secret_namespace
-  image                                    = var.image_api
-  mongodb_connection_secret_key_url        = module.db_document.mongodb_connection_secret_key_url
-  mongodb_connection_secret_name           = module.db_document.mongodb_connection_secret_name
-  mongodb_connection_secret_version        = module.db_document.mongodb_connection_secret_version
-  namespace                                = var.namespace
+  source                            = "./modules/api"
+  api_client_id                     = var.api_client_id
+  api_client_secret                 = var.api_client_secret
+  image                             = var.image_api
+  mongodb_connection_secret_key_url = module.db_document.mongodb_connection_secret_key_url
+  mongodb_connection_secret_name    = module.db_document.mongodb_connection_secret_name
+  mongodb_connection_secret_version = module.db_document.mongodb_connection_secret_version
+  namespace                         = var.namespace
 }
 
 module "weekly_download" {
@@ -92,7 +100,8 @@ module "acceptance_test" {
     module.frontend,
     module.ingress,
   ]
-  source    = "./modules/acceptance_test"
-  image     = var.image_acceptance_test
-  namespace = var.namespace
+  source        = "./modules/acceptance_test"
+  image         = var.image_acceptance_test
+  namespace     = var.namespace
+  frontend_host = var.frontend_host
 }
