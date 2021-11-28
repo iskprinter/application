@@ -26,7 +26,7 @@ resource "kubernetes_deployment" "frontend" {
     name      = "frontend"
   }
   spec {
-    replicas = 2
+    replicas = var.replicas
     selector {
       match_labels = {
         "app" = "frontend"

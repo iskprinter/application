@@ -14,8 +14,24 @@ variable "api_host" {
   type = string
 }
 
+variable "api_replicas" {
+  type = number
+}
+
+variable "cert_issuer" {
+  type = string
+}
+
+variable "create_namespace" {
+  type = bool
+}
+
 variable "frontend_host" {
   type = string
+}
+
+variable "frontend_replicas" {
+  type = number
 }
 
 variable "mongodb_replica_count" {

@@ -27,7 +27,11 @@ terraform {
 
 inputs = {
   api_host                       = "api.local.iskprinter.com"
+  api_replicas                   = 1
+  cert_issuer                    = "self-signed"
+  create_namespace               = false
   frontend_host                  = "local.iskprinter.com"
+  frontend_replicas              = 1
   mongodb_persistent_volume_size = "1Gi"
   mongodb_replica_count          = 1
   namespace                      = "iskprinter-local"
@@ -60,19 +64,19 @@ generate "providers" {
 
     provider "helm" {
       kubernetes {
-        config_context = "minikube"
+      config_path = "~/.kube/config"
+      config_context = "minikube"
       }
     }
 
     provider "kubectl" {
+      config_path = "~/.kube/config"
       config_context = "minikube"
     }
 
     provider "kubernetes" {
+      config_path = "~/.kube/config"
       config_context = "minikube"
-      experiments {
-        manifest_resource = true
-      }
     }
 
   EOF

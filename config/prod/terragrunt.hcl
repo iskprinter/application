@@ -27,7 +27,11 @@ terraform {
 
 inputs = {
   api_host                       = "api.iskprinter.com"
+  api_replicas                   = 2
+  cert_issuer                    = "lets-encrypt-prod"
+  create_namespace               = true
   frontend_host                  = "iskprinter.com"
+  frontend_replicas              = 2
   mongodb_persistent_volume_size = "10Gi"
   mongodb_replica_count          = 2
   namespace                      = "iskprinter-prod"

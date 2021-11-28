@@ -1,4 +1,5 @@
 module "namespaces" {
+  count     = var.create_namespace ? 1 : 0
   source    = "./modules/namespaces"
   namespace = var.namespace
 }
@@ -50,6 +51,7 @@ module "api" {
   mongodb_connection_secret_name    = module.db_document.mongodb_connection_secret_name
   mongodb_connection_secret_version = module.db_document.mongodb_connection_secret_version
   namespace                         = var.namespace
+  replicas                          = var.api_replicas
 }
 
 module "weekly_download" {
@@ -69,9 +71,10 @@ module "frontend" {
     module.namespaces
   ]
   source    = "./modules/frontend"
+  api_host  = var.api_host
   image     = var.image_frontend
   namespace = var.namespace
-  api_host  = var.api_host
+  replicas  = var.frontend_replicas
 }
 
 module "ingress" {
@@ -82,6 +85,7 @@ module "ingress" {
   api_host                     = var.api_host
   api_service_name             = module.api.service_name
   api_service_port             = module.api.service_port
+  cert_issuer                  = var.cert_issuer
   frontend_host                = var.frontend_host
   frontend_service_name        = module.frontend.service_name
   frontend_service_port        = module.frontend.service_port

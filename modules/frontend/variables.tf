@@ -9,3 +9,7 @@ variable "namespace" {
 variable "api_host" {
   type = string
 }
+
+variable "replicas" {
+  type = number
+}
