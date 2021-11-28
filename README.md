@@ -13,9 +13,33 @@ Terraform configuration to deploy all application-layer ISK Printer components
     minikube addons enable ingress
     ```
 
-1. Create the `iskprinter-local` namespace.
+1. Create the `iskprinter-local` namespace and the `cert-manager` namespaces.
     ```
-    kubectl --context minikube create namespace iskprinter-local
+    kubectl --context minikube create namespace iskprinter-local 
+    kubectl --context minikube create namespace cert-manager
+    ```
+
+1. Install `cert-manager`.
+    ```
+    helm upgrade --install \
+        cert-manager cert-manager \
+        --repo https://charts.jetstack.io \
+        -n cert-manager \
+        --version v1.6.1 \
+        --set prometheus.enabled=false \
+        --set installCRDs=true
+    ```
+
+1. Create a self-signed issuer. (If copying this from a text editor into a shell, first de-indent the code, then copy).
+    ```
+    cat <<EOF | kubectl apply -f -
+    apiVersion: cert-manager.io/v1
+    kind: ClusterIssuer
+    metadata:
+        name: self-signed
+    spec:
+        selfSigned: {}
+    EOF
     ```
 
 1. Create a default imagePullSecret and attach it to the default service account.
@@ -41,7 +65,7 @@ Terraform configuration to deploy all application-layer ISK Printer components
     export TF_VAR_api_client_secret='<api_client_secret>'
     ```
 
-1. Deploy the application.
+1. Deploy the application. The acceptance test will fail because the certificates are not yet trusted.
     ```
     terragrunt apply --terragrunt-working-dir ./config/local
     ```
@@ -56,3 +80,23 @@ Terraform configuration to deploy all application-layer ISK Printer components
    ```
    nohup minikube tunnel </dev/null >/dev/null &
    ```
+
+1. Get the certificate contents and save it locally.
+    ```
+    kubectl get secret tls-iskprinter-com \
+        -n iskprinter-local \
+        -o json \
+        | jq -r '.data["tls.crt"]' \
+        | base64 -d \
+        > ~/Desktop/frontend.pem
+    kubectl get secret tls-api-iskprinter-com \
+        -n iskprinter-local \
+        -o json \
+        | jq -r '.data["tls.crt"]' \
+        | base64 -d \
+        > ~/Desktop/api.pem
+    ```
+
+1. Add each of the certificates to your keychain. Double-click on each and set the trust level as "Always Trusted".
+
+1. Visit https://local.iskprinter.com to confirm that the page is visible and the certificate is trusted.

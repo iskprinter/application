@@ -39,7 +39,7 @@ resource "kubernetes_deployment" "api" {
     name      = "api"
   }
   spec {
-    replicas = 2
+    replicas = var.replicas
     selector {
       match_labels = {
         "app" = "api"

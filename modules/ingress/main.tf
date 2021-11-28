@@ -1,17 +1,10 @@
-data "kubernetes_service" "nginx" {
-  metadata {
-    namespace = "ingress"
-    name      = "ingress-nginx-controller"
-  }
-}
-
 resource "kubernetes_ingress" "api_iskprinter_com" {
   wait_for_load_balancer = true
   metadata {
     namespace = var.namespace
     name      = "api-iskprinter-com"
     annotations = {
-      "cert-manager.io/cluster-issuer"                    = "lets-encrypt-prod"
+      "cert-manager.io/cluster-issuer"                    = var.cert_issuer
       "nginx.ingress.kubernetes.io/configuration-snippet" = <<-EOF
         more_set_input_headers  "strict-transport-security: max-age=63072000; includeSubDomains; preload";
         EOF
@@ -46,7 +39,7 @@ resource "kubernetes_ingress" "iskprinter_com" {
     namespace = var.namespace
     name      = "iskprinter-com"
     annotations = {
-      "cert-manager.io/cluster-issuer"                    = "lets-encrypt-prod"
+      "cert-manager.io/cluster-issuer"                    = var.cert_issuer
       "nginx.ingress.kubernetes.io/configuration-snippet" = "more_set_input_headers \"strict-transport-security: max-age=63072000; includeSubDomains; preload\";"
       "nginx.ingress.kubernetes.io/server-snippet"        = <<-EOF
         if ($host ~ "www.${var.frontend_host}") {

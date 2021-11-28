@@ -25,3 +25,7 @@ variable "mongodb_connection_secret_key_url" {
 variable "mongodb_connection_secret_version" {
   type = string
 }
+
+variable "replicas" {
+  type = number
+}

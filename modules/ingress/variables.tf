@@ -10,6 +10,10 @@ variable "api_host" {
   type = string
 }
 
+variable "cert_issuer" {
+  type = string
+}
+
 variable "frontend_host" {
   type = string
 }
