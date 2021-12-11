@@ -100,7 +100,7 @@ variable "google_dns_managed_zone_name" {
 
 variable "neo4j_version" {
   type    = string
-  default = "4.3.4" # The Neo4j version.
+  default = "4.4.0" # The Neo4j version.
 }
 
 variable "region" {
