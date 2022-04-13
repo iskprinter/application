@@ -38,30 +38,3 @@ resource "kubernetes_cron_job" "acceptance_test" {
     }
   }
 }
-
-resource "kubernetes_job" "acceptance_test" {
-  wait_for_completion = true
-  metadata {
-    namespace = var.namespace
-    name      = local.name
-  }
-  spec {
-    backoff_limit = local.backoff_limit
-    template {
-      metadata {
-        name = local.name
-      }
-      spec {
-        restart_policy = local.restart_policy
-        container {
-          name  = local.name
-          image = var.image
-          env {
-            name  = "FRONTEND_HOST"
-            value = var.frontend_host
-          }
-        }
-      }
-    }
-  }
-}

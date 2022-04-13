@@ -3,23 +3,6 @@ locals {
   service_port = 80
 }
 
-resource "kubernetes_service" "frontend" {
-  metadata {
-    namespace = var.namespace
-    name      = local.service_name
-  }
-  spec {
-    type = "ClusterIP"
-    selector = {
-      "app" = "frontend"
-    }
-    port {
-      port        = local.service_port
-      target_port = local.service_port
-    }
-  }
-}
-
 resource "kubernetes_deployment" "frontend" {
   metadata {
     namespace = var.namespace
@@ -71,6 +54,74 @@ resource "kubernetes_deployment" "frontend" {
           }
         }
       }
+    }
+  }
+}
+
+resource "kubernetes_service" "frontend" {
+  metadata {
+    namespace = var.namespace
+    name      = local.service_name
+  }
+  spec {
+    type = "ClusterIP"
+    selector = {
+      "app" = "frontend"
+    }
+    port {
+      port        = local.service_port
+      target_port = local.service_port
+    }
+  }
+}
+
+resource "kubernetes_ingress" "frontend" {
+  wait_for_load_balancer = true
+  metadata {
+    namespace = var.namespace
+    name      = "frontend"
+    annotations = {
+      "cert-manager.io/cluster-issuer"                    = "lets-encrypt"
+      "nginx.ingress.kubernetes.io/configuration-snippet" = "more_set_input_headers \"strict-transport-security: max-age=63072000; includeSubDomains; preload\";"
+      "nginx.ingress.kubernetes.io/server-snippet"        = <<-EOF
+        if ($host ~ "www.${var.frontend_host}") {
+          return 308 "https://${var.frontend_host}$request_uri";
+        }
+        EOF
+    }
+  }
+  spec {
+    ingress_class_name = "nginx"
+    rule {
+      host = var.frontend_host
+      http {
+        path {
+          path = "/"
+          backend {
+            service_name = local.service_name
+            service_port = local.service_port
+          }
+        }
+      }
+    }
+    rule {
+      host = "www.${var.frontend_host}"
+      http {
+        path {
+          path = "/"
+          backend {
+            service_name = local.service_name
+            service_port = local.service_port
+          }
+        }
+      }
+    }
+    tls {
+      hosts = [
+        var.frontend_host,
+        "www.${var.frontend_host}"
+      ]
+      secret_name = "tls-frontend"
     }
   }
 }

@@ -2,7 +2,15 @@ variable "api_client_id" {
   type = string
 }
 
+variable "api_host" {
+  type = string
+}
+
 variable "api_client_secret" {
+  type = string
+}
+
+variable "frontend_host" {
   type = string
 }
 
