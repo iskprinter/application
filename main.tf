@@ -1,14 +1,20 @@
 module "namespaces" {
-  count     = var.create_namespace ? 1 : 0
-  source    = "./modules/namespaces"
-  namespace = var.namespace
+  source = "./modules/namespaces"
+}
+
+module "external_secrets" {
+  source                   = "./modules/external_secrets"
+  external_secrets_version = var.external_secrets_version
+}
+
+module "cert_manager" {
+  source               = "./modules/cert_manager"
+  cert_manager_version = var.cert_manager_version
+  self_signed          = var.cert_manager_self_signed
+  project              = var.project
 }
 
 module "operator_mongodb" {
-  # This currently causes an error due to a bug in the kubectl provider
-  # depends_on = [  
-  #   module.namespaces
-  # ]
   source    = "./modules/operator_mongodb"
   namespace = var.namespace
 }
@@ -46,6 +52,8 @@ module "api" {
   source                            = "./modules/api"
   api_client_id                     = var.api_client_id
   api_client_secret                 = var.api_client_secret
+  api_host                          = var.api_host
+  frontend_host                     = var.frontend_host
   image                             = var.image_api
   mongodb_connection_secret_key_url = module.db_document.mongodb_connection_secret_key_url
   mongodb_connection_secret_name    = module.db_document.mongodb_connection_secret_name
@@ -70,28 +78,12 @@ module "frontend" {
   depends_on = [
     module.namespaces
   ]
-  source    = "./modules/frontend"
-  api_host  = var.api_host
-  image     = var.image_frontend
-  namespace = var.namespace
-  replicas  = var.frontend_replicas
-}
-
-module "ingress" {
-  depends_on = [
-    module.namespaces
-  ]
-  source                       = "./modules/ingress"
-  api_host                     = var.api_host
-  api_service_name             = module.api.service_name
-  api_service_port             = module.api.service_port
-  cert_issuer                  = var.cert_issuer
-  frontend_host                = var.frontend_host
-  frontend_service_name        = module.frontend.service_name
-  frontend_service_port        = module.frontend.service_port
-  gcp_project                  = var.gcp_project
-  google_dns_managed_zone_name = var.google_dns_managed_zone_name
-  namespace                    = var.namespace
+  source        = "./modules/frontend"
+  api_host      = var.api_host
+  frontend_host = var.frontend_host
+  image         = var.image_frontend
+  namespace     = var.namespace
+  replicas      = var.frontend_replicas
 }
 
 module "acceptance_test" {
@@ -101,8 +93,7 @@ module "acceptance_test" {
     module.db_graph,
     module.api,
     module.weekly_download,
-    module.frontend,
-    module.ingress,
+    module.frontend
   ]
   source        = "./modules/acceptance_test"
   image         = var.image_acceptance_test

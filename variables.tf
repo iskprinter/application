@@ -1,3 +1,13 @@
+variable "project" {
+  default = "cameronhudson8"
+  type    = string
+}
+
+variable "namespace" {
+  default = "iskprinter"
+  type    = string
+}
+
 # Variables provided by CI/CD
 
 variable "api_client_id" {
@@ -18,14 +28,6 @@ variable "api_replicas" {
   type = number
 }
 
-variable "cert_issuer" {
-  type = string
-}
-
-variable "create_namespace" {
-  type = bool
-}
-
 variable "frontend_host" {
   type = string
 }
@@ -39,10 +41,6 @@ variable "mongodb_replica_count" {
 }
 
 variable "mongodb_persistent_volume_size" {
-  type = string
-}
-
-variable "namespace" {
   type = string
 }
 
@@ -74,6 +72,24 @@ variable "image_frontend" {
 variable "image_weekly_download" {
   type    = string
   default = "us-west1-docker.pkg.dev/cameronhudson8/iskprinter/weekly-download:90edfe1c7757c4e701973166af53c77384013e16"
+}
+
+# External Secrets
+
+variable "external_secrets_version" {
+  default = "0.5.1"
+  type    = string
+}
+
+# Cert Manager
+
+variable "cert_manager_version" {
+  default = "1.6.1"
+  type    = string
+}
+
+variable "cert_manager_self_signed" {
+  type = bool
 }
 
 # Defaults

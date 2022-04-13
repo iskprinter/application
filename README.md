@@ -12,40 +12,10 @@ Terraform configuration to deploy all application-layer ISK Printer components
     brew install --cask docker
     brew install helm
     minikube start \
-        --kubernetes-version=v1.20.10 \
-        --cpus 3 \
-        --memory 3072
+        --kubernetes-version=v1.21.9 \
+        --cpus 4 \
+        --memory 7951
     minikube addons enable ingress
-    ```
-
-1. Create the `iskprinter-local` namespace and the `cert-manager` namespaces.
-    ```
-    kubectl --context minikube create namespace iskprinter-local 
-    kubectl --context minikube create namespace cert-manager
-    ```
-
-1. Install `cert-manager`.
-    ```
-    helm upgrade --install \
-        --kube-context minikube \
-        cert-manager cert-manager \
-        --repo https://charts.jetstack.io \
-        -n cert-manager \
-        --version v1.6.1 \
-        --set prometheus.enabled=false \
-        --set installCRDs=true
-    ```
-
-1. Create a self-signed issuer. (If copying this from a text editor into a shell, first de-indent the code, then copy to you shell).
-    ```
-    cat <<EOF | kubectl apply --context minikube -f -
-    apiVersion: cert-manager.io/v1
-    kind: ClusterIssuer
-    metadata:
-        name: self-signed
-    spec:
-        selfSigned: {}
-    EOF
     ```
 
 1. Create a default imagePullSecret and attach it to the default service account.
@@ -55,7 +25,7 @@ Terraform configuration to deploy all application-layer ISK Printer components
 
     kubectl create secret docker-registry image-pull-secret \
         --context minikube \
-        -n iskprinter-local \
+        -n iskprinter \
         --docker-server=https://us-west1-docker.pkg.dev \
         --docker-email="${SERVICE_ACCOUNT_ID}@cameronhudson8.iam.gserviceaccount.com" \
         --docker-username=_json_key \
@@ -63,7 +33,7 @@ Terraform configuration to deploy all application-layer ISK Printer components
 
     kubectl patch serviceaccount default \
         --context minikube \
-        -n iskprinter-local \
+        -n iskprinter \
         -p '{"imagePullSecrets": [{"name": "image-pull-secret"}]}'
     ```
 
@@ -80,24 +50,24 @@ Terraform configuration to deploy all application-layer ISK Printer components
 
 1. Set your `/etc/hosts` file as shown below.
    ```
-   127.0.0.1 local.iskprinter.com
-   127.0.0.1 api.local.iskprinter.com
+   127.0.0.1 iskprinter-local.com
+   127.0.0.1 api.iskprinter-local.com
    ```
 
 1. Get the certificate contents and save it locally.
     ```
-    kubectl get secret tls-iskprinter-com \
-        -n iskprinter-local \
+    kubectl get secret tls-frontend \
+        -n iskprinter \
         -o json \
         | jq -r '.data["tls.crt"]' \
         | base64 -d \
-        >~/Desktop/frontend.pem
-    kubectl get secret tls-api-iskprinter-com \
-        -n iskprinter-local \
+        >~/Desktop/iskprinter-local.com.pem
+    kubectl get secret tls-api \
+        -n iskprinter \
         -o json \
         | jq -r '.data["tls.crt"]' \
         | base64 -d \
-        >~/Desktop/api.pem
+        >~/Desktop/api.iskprinter-local.com.pem
     ```
 
 1. Add each of the certificates to your `login` keychain. Then, inside Keychain Access, double-click on each certificate and set the trust level as "Always Trusted".
@@ -107,7 +77,7 @@ Terraform configuration to deploy all application-layer ISK Printer components
    minikube tunnel
    ```
 
-1. Visit https://local.iskprinter.com to confirm that the page is visible and the certificate is trusted.
+1. Visit https://iskprinter-local.com to confirm that the page is visible and the certificate is trusted.
 
 1. Re-apply the terraform resources to confirm that the acceptance test passes.
     ```

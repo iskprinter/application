@@ -26,15 +26,14 @@ terraform {
 }
 
 inputs = {
-  api_host                       = "api.local.iskprinter.com"
+  api_host                       = "api.iskprinter-local.com"
   api_replicas                   = 1
-  cert_issuer                    = "self-signed"
+  cert_manager_self_signed       = true
   create_namespace               = false
-  frontend_host                  = "local.iskprinter.com"
+  frontend_host                  = "iskprinter-local.com"
   frontend_replicas              = 1
   mongodb_persistent_volume_size = "1Gi"
   mongodb_replica_count          = 1
-  namespace                      = "iskprinter-local"
   neo4j_persistent_volume_size   = "1Gi"
   neo4j_replica_count            = 1
 }
