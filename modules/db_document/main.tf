@@ -5,6 +5,55 @@ locals {
   mongodb_resource_name             = "mongodb"
 }
 
+# Service Account
+
+resource "kubernetes_service_account" "operator_mongodb" {
+  metadata {
+    namespace = var.namespace
+    name      = "mongodb-kubernetes-operator"
+  }
+}
+
+resource "kubernetes_role" "operator_mongodb" {
+  metadata {
+    namespace = var.namespace
+    name      = "mongodb-kubernetes-operator"
+  }
+  rule {
+    api_groups = [""]
+    resources  = ["pods", "services", "configmaps", "secrets"]
+    verbs      = ["create", "delete", "get", "list", "patch", "update", "watch"]
+  }
+  rule {
+    api_groups = ["apps"]
+    resources  = ["statefulsets"]
+    verbs      = ["create", "delete", "get", "list", "patch", "update", "watch"]
+  }
+  rule {
+    api_groups = ["mongodbcommunity.mongodb.com"]
+    resources  = ["mongodbcommunity", "mongodbcommunity/status", "mongodbcommunity/spec", "mongodbcommunity/finalizers"]
+    verbs      = ["get", "patch", "list", "update", "watch"]
+  }
+}
+
+resource "kubernetes_role_binding" "operator_mongodb" {
+  metadata {
+    namespace = var.namespace
+    name      = "mongodb-kubernetes-operator"
+  }
+  subject {
+    kind      = "ServiceAccount"
+    namespace = var.namespace
+    name      = "mongodb-kubernetes-operator"
+  }
+  role_ref {
+    kind      = "Role"
+    namespace = var.namespace
+    name      = "mongodb-kubernetes-operator"
+    api_group = "rbac.authorization.k8s.io"
+  }
+}
+
 # Secrets
 
 resource "random_password" "mongodb_user_admin_password" {
