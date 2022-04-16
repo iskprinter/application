@@ -74,13 +74,6 @@ variable "image_weekly_download" {
   default = "us-west1-docker.pkg.dev/cameronhudson8/iskprinter/weekly-download:90edfe1c7757c4e701973166af53c77384013e16"
 }
 
-# External Secrets
-
-variable "external_secrets_version" {
-  default = "0.5.1"
-  type    = string
-}
-
 # Cert Manager
 
 variable "cert_manager_version" {
