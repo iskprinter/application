@@ -1,21 +1,6 @@
-variable "project" {
-  default = "cameronhudson8"
-  type    = string
-}
-
 variable "namespace" {
   default = "iskprinter"
   type    = string
-}
-
-# Variables provided by CI/CD
-
-variable "api_client_id" {
-  type = string
-}
-
-variable "api_client_secret" {
-  type = string
 }
 
 # Variables provided by Terragrunt config
