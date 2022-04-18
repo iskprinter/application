@@ -5,17 +5,6 @@ locals {
   api_client_credentials_secret_key_secret = "secret"
 }
 
-resource "kubernetes_secret" "api_client_credentials" {
-  metadata {
-    namespace = var.namespace
-    name      = "api-client-credentials"
-  }
-  data = {
-    (local.api_client_credentials_secret_key_id)     = var.api_client_id
-    (local.api_client_credentials_secret_key_secret) = var.api_client_secret
-  }
-}
-
 resource "kubernetes_deployment" "api" {
   metadata {
     namespace = var.namespace
@@ -33,10 +22,6 @@ resource "kubernetes_deployment" "api" {
         labels = {
           "app" = "api"
         }
-        annotations = {
-          "apiClientCredentialsSecretVersion" = kubernetes_secret.api_client_credentials.metadata[0].resource_version
-          "mongodbConnectionSecretVersion"    = var.mongodb_connection_secret_version
-        }
       }
       spec {
         container {
@@ -46,8 +31,8 @@ resource "kubernetes_deployment" "api" {
             name = "CLIENT_ID"
             value_from {
               secret_key_ref {
-                name = kubernetes_secret.api_client_credentials.metadata[0].name
-                key  = local.api_client_credentials_secret_key_id
+                name = "api-client-credentials"
+                key  = "id"
               }
             }
           }
@@ -55,8 +40,8 @@ resource "kubernetes_deployment" "api" {
             name = "CLIENT_SECRET"
             value_from {
               secret_key_ref {
-                name = kubernetes_secret.api_client_credentials.metadata[0].name
-                key  = local.api_client_credentials_secret_key_secret
+                name = "api-client-credentials"
+                key  = "secret"
               }
             }
           }

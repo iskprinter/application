@@ -48,7 +48,6 @@ resource "kubernetes_role_binding" "operator_mongodb" {
   }
   role_ref {
     kind      = "Role"
-    namespace = var.namespace
     name      = "mongodb-kubernetes-operator"
     api_group = "rbac.authorization.k8s.io"
   }

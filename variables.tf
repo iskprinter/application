@@ -74,45 +74,9 @@ variable "image_weekly_download" {
   default = "us-west1-docker.pkg.dev/cameronhudson8/iskprinter/weekly-download:90edfe1c7757c4e701973166af53c77384013e16"
 }
 
-# Cert Manager
-
-variable "cert_manager_version" {
-  default = "1.6.1"
-  type    = string
-}
-
-variable "cert_manager_self_signed" {
-  type = bool
-}
-
 # Defaults
-
-variable "cicd_namespace" {
-  type    = string
-  default = "tekton-pipelines"
-}
-
-variable "cicd_bot_name" {
-  type    = string
-  default = "cicd-bot"
-}
-
-variable "gcp_project" {
-  type    = string
-  default = "cameronhudson8"
-}
-
-variable "google_dns_managed_zone_name" {
-  type    = string
-  default = "iskprinter-com"
-}
 
 variable "neo4j_version" {
   type    = string
   default = "4.4.0" # The Neo4j version.
-}
-
-variable "region" {
-  type    = string
-  default = "us-west1"
 }
