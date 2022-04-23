@@ -28,7 +28,7 @@ terraform {
 inputs = {
   api_host                       = "api.iskprinter-local.com"
   api_replicas                   = 1
-  cert_manager_self_signed       = true
+  cert_manager_issuer_name       = "self-signed"
   create_namespace               = false
   frontend_host                  = "iskprinter-local.com"
   frontend_replicas              = 1

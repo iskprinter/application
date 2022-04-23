@@ -106,7 +106,7 @@ resource "kubernetes_ingress" "api" {
     namespace = var.namespace
     name      = "api"
     annotations = {
-      "cert-manager.io/cluster-issuer"                    = "lets-encrypt"
+      "cert-manager.io/cluster-issuer"                    = var.cert_manager_issuer_name
       "nginx.ingress.kubernetes.io/configuration-snippet" = <<-EOF
         more_set_input_headers  "strict-transport-security: max-age=63072000; includeSubDomains; preload";
         EOF
