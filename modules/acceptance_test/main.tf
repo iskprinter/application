@@ -28,8 +28,8 @@ resource "kubernetes_cron_job" "acceptance_test" {
               name  = local.name
               image = var.image
               env {
-                name  = "FRONTEND_HOST"
-                value = var.frontend_host
+                name  = "CYPRESS_BASE_URL"
+                value = "https://${var.frontend_host}"
               }
             }
           }
