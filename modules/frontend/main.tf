@@ -81,7 +81,7 @@ resource "kubernetes_ingress" "frontend" {
     namespace = var.namespace
     name      = "frontend"
     annotations = {
-      "cert-manager.io/cluster-issuer"                    = "lets-encrypt"
+      "cert-manager.io/cluster-issuer"                    = var.cert_manager_issuer_name
       "nginx.ingress.kubernetes.io/configuration-snippet" = "more_set_input_headers \"strict-transport-security: max-age=63072000; includeSubDomains; preload\";"
       "nginx.ingress.kubernetes.io/server-snippet"        = <<-EOF
         if ($host ~ "www.${var.frontend_host}") {

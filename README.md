@@ -6,7 +6,8 @@ Terraform configuration to deploy all application-layer ISK Printer components
 
 1. Deploy the application.
     ```
-    terragrunt apply --terragrunt-working-dir ./config/local
+    ENV_NAME=local  # or 'prod'
+    terragrunt apply --terragrunt-working-dir "./config/${ENV_NAME}"
     ```
 
 1. Get the certificate contents and save it locally.

@@ -16,6 +16,7 @@ module "db_graph" {
 module "api" {
   source                            = "./modules/api"
   api_host                          = var.api_host
+  cert_manager_issuer_name          = var.cert_manager_issuer_name
   frontend_host                     = var.frontend_host
   image                             = var.image_api
   mongodb_connection_secret_key_url = module.db_document.mongodb_connection_secret_key_url
@@ -35,12 +36,13 @@ module "weekly_download" {
 }
 
 module "frontend" {
-  source        = "./modules/frontend"
-  api_host      = var.api_host
-  frontend_host = var.frontend_host
-  image         = var.image_frontend
-  namespace     = var.namespace
-  replicas      = var.frontend_replicas
+  source                   = "./modules/frontend"
+  api_host                 = var.api_host
+  frontend_host            = var.frontend_host
+  cert_manager_issuer_name = var.cert_manager_issuer_name
+  image                    = var.image_frontend
+  namespace                = var.namespace
+  replicas                 = var.frontend_replicas
 }
 
 module "acceptance_test" {
