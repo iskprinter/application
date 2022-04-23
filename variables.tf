@@ -45,7 +45,7 @@ variable "neo4j_replica_count" {
 
 variable "image_acceptance_test" {
   type    = string
-  default = "us-west1-docker.pkg.dev/cameronhudson8/iskprinter/acceptance-test:1ef980b5645bebb21be394055fad80427951edd4"
+  default = "us-west1-docker.pkg.dev/cameronhudson8/iskprinter/acceptance-test:cc41ed4d74293ee6c1baa274c9bdd02e19f30213"
 }
 
 variable "image_api" {
