@@ -1,3 +1,8 @@
+module "external_secrets_secrets" {
+  source   = "./modules/external_secrets_secrets"
+  env_name = var.env_name
+}
+
 module "db_document" {
   source                 = "./modules/db_document"
   replica_count          = var.mongodb_replica_count
