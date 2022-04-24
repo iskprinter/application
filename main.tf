@@ -58,8 +58,7 @@ module "acceptance_test" {
     module.weekly_download,
     module.frontend
   ]
-  source        = "./modules/acceptance_test"
-  image         = var.image_acceptance_test
-  namespace     = var.namespace
-  frontend_host = var.frontend_host
+  source    = "./modules/acceptance_test"
+  image     = var.image_acceptance_test
+  namespace = var.namespace
 }
