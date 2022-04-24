@@ -8,7 +8,7 @@ remote_state {
     project              = "cameronhudson8"
     location             = "us-west1"
     bucket               = "iskprinter-tf-state"
-    prefix               = "application/local/${run_cmd("--terragrunt-quiet", "whoami")}"
+    prefix               = "application/local-${run_cmd("--terragrunt-quiet", "whoami")}"
     skip_bucket_creation = true
   }
 }
