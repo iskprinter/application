@@ -30,6 +30,7 @@ inputs = {
   api_replicas                   = 1
   cert_manager_issuer_name       = "self-signed"
   create_namespace               = false
+  env_name                       = "local"
   frontend_host                  = "iskprinter-local.com"
   frontend_replicas              = 1
   mongodb_persistent_volume_size = "1Gi"

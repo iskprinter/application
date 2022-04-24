@@ -30,6 +30,7 @@ inputs = {
   api_replicas                   = 2
   cert_manager_issuer_name       = "lets-encrypt"
   create_namespace               = true
+  env_name                       = "prod"
   frontend_host                  = "iskprinter.com"
   frontend_replicas              = 2
   mongodb_persistent_volume_size = "10Gi"
