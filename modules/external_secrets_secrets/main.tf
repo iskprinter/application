@@ -4,7 +4,7 @@ resource "kubectl_manifest" "api_client_credentials" {
     kind       = "ExternalSecret"
     type       = "Opaque"
     metadata = {
-      namespace = "iskprinter"
+      namespace = var.namespace
       name      = "api-client-credentials"
     }
     spec = {

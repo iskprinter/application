@@ -1,9 +1,12 @@
+# Variables provided by Terragrunt config
+
 variable "namespace" {
-  default = "iskprinter"
-  type    = string
+  type = string
 }
 
-# Variables provided by Terragrunt config
+variable "create_ingress" {
+  type = string
+}
 
 variable "api_host" {
   type = string
