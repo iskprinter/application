@@ -14,6 +14,10 @@ variable "image" {
   type = string
 }
 
+variable "create_ingress" {
+  type = string
+}
+
 variable "namespace" {
   type = string
 }

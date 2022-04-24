@@ -26,7 +26,7 @@ resource "kubernetes_deployment" "frontend" {
           name  = "frontend"
           image = var.image
           env {
-            name = "BACKEND_URL"
+            name  = "BACKEND_URL"
             value = "https://${var.api_host}"
           }
           port {
@@ -76,6 +76,7 @@ resource "kubernetes_service" "frontend" {
 }
 
 resource "kubernetes_ingress" "frontend" {
+  count                  = var.create_ingress ? 1 : 0
   wait_for_load_balancer = true
   metadata {
     namespace = var.namespace

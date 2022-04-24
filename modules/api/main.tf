@@ -101,6 +101,7 @@ resource "kubernetes_service" "api" {
 }
 
 resource "kubernetes_ingress" "api" {
+  count                  = var.create_ingress ? 1 : 0
   wait_for_load_balancer = true
   metadata {
     namespace = var.namespace

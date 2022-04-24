@@ -29,12 +29,13 @@ inputs = {
   api_host                       = "api.iskprinter.com"
   api_replicas                   = 2
   cert_manager_issuer_name       = "lets-encrypt"
-  create_namespace               = true
   env_name                       = "prod"
   frontend_host                  = "iskprinter.com"
   frontend_replicas              = 2
+  create_ingress                 = true
   mongodb_persistent_volume_size = "10Gi"
   mongodb_replica_count          = 2
+  namespace                      = "iskprinter"
   neo4j_persistent_volume_size   = "10Gi"
   neo4j_replica_count            = 2
 }

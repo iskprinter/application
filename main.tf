@@ -1,6 +1,7 @@
 module "external_secrets_secrets" {
-  source   = "./modules/external_secrets_secrets"
-  env_name = var.env_name
+  source    = "./modules/external_secrets_secrets"
+  namespace = var.namespace
+  env_name  = var.env_name
 }
 
 module "db_document" {
@@ -24,6 +25,7 @@ module "api" {
   cert_manager_issuer_name          = var.cert_manager_issuer_name
   frontend_host                     = var.frontend_host
   image                             = var.image_api
+  create_ingress                    = var.create_ingress
   mongodb_connection_secret_key_url = module.db_document.mongodb_connection_secret_key_url
   mongodb_connection_secret_name    = module.db_document.mongodb_connection_secret_name
   mongodb_connection_secret_version = module.db_document.mongodb_connection_secret_version
@@ -46,6 +48,7 @@ module "frontend" {
   frontend_host            = var.frontend_host
   cert_manager_issuer_name = var.cert_manager_issuer_name
   image                    = var.image_frontend
+  create_ingress           = var.create_ingress
   namespace                = var.namespace
   replicas                 = var.frontend_replicas
 }
