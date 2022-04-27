@@ -26,6 +26,7 @@ terraform {
 }
 
 inputs = {
+  allow_cors_localhost           = true
   api_host                       = "api.iskprinter-local.com"
   api_replicas                   = 1
   cert_manager_issuer_name       = "self-signed"

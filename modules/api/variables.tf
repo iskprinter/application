@@ -6,8 +6,8 @@ variable "cert_manager_issuer_name" {
   type = string
 }
 
-variable "frontend_host" {
-  type = string
+variable "cors_urls" {
+  type = list(string)
 }
 
 variable "image" {

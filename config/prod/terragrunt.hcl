@@ -26,6 +26,7 @@ terraform {
 }
 
 inputs = {
+  allow_cors_localhost           = false
   api_host                       = "api.iskprinter.com"
   api_replicas                   = 2
   cert_manager_issuer_name       = "lets-encrypt"

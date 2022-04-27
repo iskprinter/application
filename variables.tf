@@ -8,6 +8,10 @@ variable "create_ingress" {
   type = string
 }
 
+variable "allow_cors_localhost" {
+  type = bool
+}
+
 variable "api_host" {
   type = string
 }

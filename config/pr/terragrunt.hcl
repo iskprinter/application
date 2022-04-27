@@ -26,6 +26,7 @@ terraform {
 }
 
 inputs = {
+  allow_cors_localhost           = false
   api_host                       = "api.iskprinter-pr-${get_env("PR_NUMBER")}.com"
   api_replicas                   = 1
   cert_manager_issuer_name       = "self-signed"
