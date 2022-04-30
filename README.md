@@ -6,7 +6,7 @@ Terraform configuration to deploy all application-layer ISK Printer components
 
 1. Deploy the application.
     ```
-    ENV_NAME=local  # or 'prod'
+    ENV_NAME=test  # or 'prod'
     terragrunt apply --terragrunt-working-dir "./config/${ENV_NAME}"
     ```
 
@@ -17,13 +17,13 @@ Terraform configuration to deploy all application-layer ISK Printer components
         -o json \
         | jq -r '.data["tls.crt"]' \
         | base64 -d \
-        >~/Desktop/iskprinter-local.com.pem
+        >~/Desktop/iskprinter-test.com.pem
     kubectl get secret tls-api \
         -n iskprinter \
         -o json \
         | jq -r '.data["tls.crt"]' \
         | base64 -d \
-        >~/Desktop/api.iskprinter-local.com.pem
+        >~/Desktop/api.iskprinter-test.com.pem
     ```
 
 1. Add each of the certificates to your `login` keychain. Then, inside Keychain Access, double-click on each certificate and set the trust level as "Always Trusted".
@@ -33,4 +33,4 @@ Terraform configuration to deploy all application-layer ISK Printer components
    minikube tunnel
    ```
 
-1. Visit https://iskprinter-local.com to confirm that the page is visible and the certificate is trusted.
+1. Visit https://iskprinter-test.com to confirm that the page is visible and the certificate is trusted.
