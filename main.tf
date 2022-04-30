@@ -23,7 +23,7 @@ module "api" {
   source                            = "./modules/api"
   api_host                          = var.api_host
   cert_manager_issuer_name          = var.cert_manager_issuer_name
-  frontend_host                     = var.frontend_host
+  cors_urls                         = var.allow_cors_localhost ? ["https://${var.frontend_host}", "http://localhost:4200"] : ["https://${var.frontend_host}"]
   image                             = var.image_api
   create_ingress                    = var.create_ingress
   mongodb_connection_secret_key_url = module.db_document.mongodb_connection_secret_key_url

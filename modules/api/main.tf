@@ -111,7 +111,7 @@ resource "kubernetes_ingress" "api" {
       "nginx.ingress.kubernetes.io/configuration-snippet" = <<-EOF
         more_set_input_headers  "strict-transport-security: max-age=63072000; includeSubDomains; preload";
         EOF
-      "nginx.ingress.kubernetes.io/cors-allow-origin"     = "https://${var.frontend_host}"
+      "nginx.ingress.kubernetes.io/cors-allow-origin"     = join(", ", var.cors_urls)
       "nginx.ingress.kubernetes.io/enable-cors"           = "true"
     }
   }
