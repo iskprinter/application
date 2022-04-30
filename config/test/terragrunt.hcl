@@ -8,7 +8,7 @@ remote_state {
     project              = "cameronhudson8"
     location             = "us-west1"
     bucket               = "iskprinter-tf-state"
-    prefix               = "application/local-${run_cmd("--terragrunt-quiet", "whoami")}"
+    prefix               = "application/test-${run_cmd("--terragrunt-quiet", "whoami")}"
     skip_bucket_creation = true
   }
 }
@@ -27,11 +27,11 @@ terraform {
 
 inputs = {
   allow_cors_localhost           = true
-  api_host                       = "api.iskprinter-local.com"
+  api_host                       = "api.iskprinter-test.com"
   api_replicas                   = 1
   cert_manager_issuer_name       = "self-signed"
-  env_name                       = "local"
-  frontend_host                  = "iskprinter-local.com"
+  env_name                       = "test"
+  frontend_host                  = "iskprinter-test.com"
   frontend_replicas              = 1
   create_ingress                 = true
   mongodb_persistent_volume_size = "1Gi"
