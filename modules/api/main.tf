@@ -54,6 +54,10 @@ resource "kubernetes_deployment" "api" {
               }
             }
           }
+          env {
+            name = "FRONTEND_URLS"
+            value = join(",", var.cors_urls)
+          }
           port {
             container_port = local.service_port
           }
@@ -111,8 +115,6 @@ resource "kubernetes_ingress" "api" {
       "nginx.ingress.kubernetes.io/configuration-snippet" = <<-EOF
         more_set_input_headers  "strict-transport-security: max-age=63072000; includeSubDomains; preload";
         EOF
-      "nginx.ingress.kubernetes.io/cors-allow-origin"     = join(", ", var.cors_urls)
-      "nginx.ingress.kubernetes.io/enable-cors"           = "true"
     }
   }
   spec {
