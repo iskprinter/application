@@ -59,7 +59,7 @@ resource "random_password" "mongodb_user_admin_password" {
   length      = 16
   min_lower   = 1
   min_numeric = 1
-  min_special = 1
+  special     = false
   min_upper   = 1
 }
 
@@ -79,7 +79,7 @@ resource "random_password" "mongodb_user_api_password" {
   length      = 16
   min_lower   = 1
   min_numeric = 1
-  min_special = 1
+  special     = false
   min_upper   = 1
 }
 
