@@ -146,7 +146,7 @@ resource "kubectl_manifest" "mongodb" {
           roles = [
             {
               name = "readWrite"
-              db   = "isk-printer"
+              db   = "iskprinter"
             }
           ]
           scramCredentialsSecretName = local.mongodb_user_api_username
