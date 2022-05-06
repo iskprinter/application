@@ -71,7 +71,7 @@ variable "image_frontend" {
 
 variable "image_weekly_download" {
   type    = string
-  default = "us-west1-docker.pkg.dev/cameronhudson8/iskprinter/weekly-download:812f50a2d2a01af51844866687ab1b51b9ec1af2"
+  default = "us-west1-docker.pkg.dev/cameronhudson8/iskprinter/weekly-download:e8330ea2b1fbb932c5fcd15964d7f4caff6517c2"
 }
 
 # Defaults
