@@ -66,7 +66,7 @@ variable "image_api" {
 
 variable "image_frontend" {
   type    = string
-  default = "us-west1-docker.pkg.dev/cameronhudson8/iskprinter/frontend:94cc46f16933b7533a4be5c6743656fd2b0e55a4"
+  default = "us-west1-docker.pkg.dev/cameronhudson8/iskprinter/frontend:187956ba128c3d1cac54828370c0a327e93ee034"
 }
 
 variable "image_weekly_download" {
