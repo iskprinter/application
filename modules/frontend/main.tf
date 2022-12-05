@@ -29,6 +29,15 @@ resource "kubernetes_deployment" "frontend" {
             name  = "BACKEND_URL"
             value = "https://${var.api_host}"
           }
+          env {
+            name = "CLIENT_ID"
+            value_from {
+              secret_key_ref {
+                name = "api-client-credentials"
+                key  = "id"
+              }
+            }
+          }
           port {
             container_port = local.service_port
           }
