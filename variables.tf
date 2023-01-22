@@ -61,12 +61,12 @@ variable "image_acceptance_test" {
 
 variable "image_api" {
   type    = string
-  default = "us-west1-docker.pkg.dev/cameronhudson8/iskprinter/api:29ea43732e522c00ff9897649c9027caee0f03f7"
+  default = "us-west1-docker.pkg.dev/cameronhudson8/iskprinter/api:207b1731dd60d4a947f536e3e3c54abef034e5a1"
 }
 
 variable "image_frontend" {
   type    = string
-  default = "us-west1-docker.pkg.dev/cameronhudson8/iskprinter/frontend:4bbe1e9d78c7e894b65fc3fb19da94ce2ba69222"
+  default = "us-west1-docker.pkg.dev/cameronhudson8/iskprinter/frontend:b75843bea4ff38a2406d1a2b01a35d57360c2c83"
 }
 
 variable "image_weekly_download" {
