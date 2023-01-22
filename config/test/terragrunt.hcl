@@ -37,8 +37,6 @@ inputs = {
   mongodb_persistent_volume_size = "1Gi"
   mongodb_replica_count          = 1
   namespace                      = "iskprinter"
-  neo4j_persistent_volume_size   = "1Gi"
-  neo4j_replica_count            = 1
 }
 
 generate "providers" {

@@ -44,14 +44,6 @@ variable "mongodb_persistent_volume_size" {
   type = string
 }
 
-variable "neo4j_persistent_volume_size" {
-  type = string
-}
-
-variable "neo4j_replica_count" {
-  type = number
-}
-
 # Images
 
 variable "image_acceptance_test" {
@@ -67,16 +59,4 @@ variable "image_api" {
 variable "image_frontend" {
   type    = string
   default = "us-west1-docker.pkg.dev/cameronhudson8/iskprinter/frontend:b75843bea4ff38a2406d1a2b01a35d57360c2c83"
-}
-
-variable "image_weekly_download" {
-  type    = string
-  default = "us-west1-docker.pkg.dev/cameronhudson8/iskprinter/weekly-download:e8330ea2b1fbb932c5fcd15964d7f4caff6517c2"
-}
-
-# Defaults
-
-variable "neo4j_version" {
-  type    = string
-  default = "4.4.0" # The Neo4j version.
 }

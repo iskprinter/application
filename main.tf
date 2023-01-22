@@ -11,14 +11,6 @@ module "db_document" {
   namespace              = var.namespace
 }
 
-module "db_graph" {
-  source                 = "./modules/db_graph"
-  namespace              = var.namespace
-  persistent_volume_size = var.neo4j_persistent_volume_size
-  replica_count          = var.neo4j_replica_count
-  neo4j_version          = var.neo4j_version
-}
-
 module "api" {
   source                            = "./modules/api"
   api_host                          = var.api_host
@@ -31,15 +23,6 @@ module "api" {
   mongodb_connection_secret_version = module.db_document.mongodb_connection_secret_version
   namespace                         = var.namespace
   replicas                          = var.api_replicas
-}
-
-module "weekly_download" {
-  source                            = "./modules/weekly_download"
-  image                             = var.image_weekly_download
-  mongodb_connection_secret_key_url = module.db_document.mongodb_connection_secret_key_url
-  mongodb_connection_secret_name    = module.db_document.mongodb_connection_secret_name
-  mongodb_connection_secret_version = module.db_document.mongodb_connection_secret_version
-  namespace                         = var.namespace
 }
 
 module "frontend" {
@@ -56,9 +39,7 @@ module "frontend" {
 module "acceptance_test" {
   depends_on = [
     module.db_document,
-    module.db_graph,
     module.api,
-    module.weekly_download,
     module.frontend
   ]
   source    = "./modules/acceptance_test"
