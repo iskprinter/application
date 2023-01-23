@@ -58,6 +58,10 @@ resource "kubernetes_deployment" "api" {
             name = "FRONTEND_URLS"
             value = join(",", var.cors_urls)
           }
+          env {
+            name = "NODE_OPTIONS"
+            value = "--max-old-space-size=1500"
+          }
           port {
             container_port = local.service_port
           }
@@ -75,10 +79,10 @@ resource "kubernetes_deployment" "api" {
           }
           resources {
             limits = {
-              memory = "256Mi"
+              memory = "1500Mi"
             }
             requests = {
-              memory = "256Mi"
+              memory = "1500Mi"
             }
           }
         }
