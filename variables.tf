@@ -53,7 +53,7 @@ variable "image_acceptance_test" {
 
 variable "image_api" {
   type    = string
-  default = "us-west1-docker.pkg.dev/cameronhudson8/iskprinter/api:dd186a83ed6539ea58fd18e545393c2a629d024f"
+  default = "us-west1-docker.pkg.dev/cameronhudson8/iskprinter/api:da527017b2bc3d2cff5a4324de382e61fc503c38"
 }
 
 variable "image_frontend" {

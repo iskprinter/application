@@ -60,7 +60,7 @@ resource "kubernetes_deployment" "api" {
           }
           env {
             name = "NODE_OPTIONS"
-            value = "--max-old-space-size=1024"
+            value = "--max-old-space-size=1500"
           }
           port {
             container_port = local.service_port
@@ -79,10 +79,10 @@ resource "kubernetes_deployment" "api" {
           }
           resources {
             limits = {
-              memory = "1Gi"
+              memory = "1500Mi"
             }
             requests = {
-              memory = "1Gi"
+              memory = "1500Mi"
             }
           }
         }
