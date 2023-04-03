@@ -55,18 +55,19 @@ resource "kubectl_manifest" "iskprinter_jwt_keys" {
       }
       data = [
         {
-          secretKey = "privateKey"
           remoteRef = {
             key      = "secret/${var.env_name}/iskprinter-jwt-keys"
             property = "private-key"
           }
+          secretKey = "iskprinter-jwt-private-key.pem"
         },
         {
-          secretKey = "publicKey"
           remoteRef = {
             key      = "secret/${var.env_name}/iskprinter-jwt-keys"
             property = "public-key"
           }
+          secretKey = "iskprinter-jwt-public-key.pem"
+
         }
       ]
       refreshInterval = "5s"
