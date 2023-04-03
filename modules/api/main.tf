@@ -55,11 +55,19 @@ resource "kubernetes_deployment" "api" {
             }
           }
           env {
-            name = "FRONTEND_URLS"
+            name  = "FRONTEND_URLS"
             value = join(",", var.cors_urls)
           }
           env {
-            name = "NODE_OPTIONS"
+            name  = "JWT_PRIVATE_KEY_PATH"
+            value = "/secrets/iskprinter-jwt-keys/iskprinter-jwt-private-key.pem"
+          }
+          env {
+            name  = "JWT_PUBLIC_KEY_PATH"
+            value = "/secrets/iskprinter-jwt-keys/iskprinter-jwt-public-key.pem"
+          }
+          env {
+            name  = "NODE_OPTIONS"
             value = "--max-old-space-size=1500"
           }
           port {
@@ -84,6 +92,17 @@ resource "kubernetes_deployment" "api" {
             requests = {
               memory = "1500Mi"
             }
+          }
+          volume_mount {
+            name       = "iskprinter-jwt-keys"
+            mount_path = "/secrets/iskprinter-jwt-keys"
+            read_only  = true
+          }
+        }
+        volume {
+          name = "iskprinter-jwt-keys"
+          secret {
+            secret_name = "iskprinter-jwt-keys"
           }
         }
       }
