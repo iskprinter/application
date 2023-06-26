@@ -19,14 +19,14 @@ resource "kubectl_manifest" "api_client_credentials" {
         {
           secretKey = "id"
           remoteRef = {
-            key      = "secret/${var.env_name}/api-client-credentials"
+            key      = "secret/api-client-credentials"
             property = "id"
           },
         },
         {
           secretKey = "secret"
           remoteRef = {
-            key      = "secret/${var.env_name}/api-client-credentials"
+            key      = "secret/api-client-credentials"
             property = "secret"
           }
         }
@@ -56,17 +56,17 @@ resource "kubectl_manifest" "iskprinter_jwt_keys" {
       data = [
         {
           remoteRef = {
-            key      = "secret/${var.env_name}/iskprinter-jwt-keys"
+            key      = "secret/iskprinter-jwt-keys"
             property = "private-key"
           }
-          secretKey = "iskprinter-jwt-private-key.pem"
+          secretKey = "private-key.pem"
         },
         {
           remoteRef = {
-            key      = "secret/${var.env_name}/iskprinter-jwt-keys"
+            key      = "secret/iskprinter-jwt-keys"
             property = "public-key"
           }
-          secretKey = "iskprinter-jwt-public-key.pem"
+          secretKey = "public-key.pem"
 
         }
       ]

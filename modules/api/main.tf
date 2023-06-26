@@ -60,11 +60,11 @@ resource "kubernetes_deployment" "api" {
           }
           env {
             name  = "JWT_PRIVATE_KEY_PATH"
-            value = "/secrets/iskprinter-jwt-keys/iskprinter-jwt-private-key.pem"
+            value = "/secrets/iskprinter-jwt-keys/private-key.pem"
           }
           env {
             name  = "JWT_PUBLIC_KEY_PATH"
-            value = "/secrets/iskprinter-jwt-keys/iskprinter-jwt-public-key.pem"
+            value = "/secrets/iskprinter-jwt-keys/public-key.pem"
           }
           env {
             name  = "NODE_OPTIONS"
@@ -127,7 +127,7 @@ resource "kubernetes_service" "api" {
   }
 }
 
-resource "kubernetes_ingress" "api" {
+resource "kubernetes_ingress_v1" "api" {
   count                  = var.create_ingress ? 1 : 0
   wait_for_load_balancer = true
   metadata {
@@ -148,8 +148,12 @@ resource "kubernetes_ingress" "api" {
         path {
           path = "/"
           backend {
-            service_name = local.service_name
-            service_port = local.service_port
+            service {
+              name = local.service_name
+              port {
+                number = local.service_port
+              }
+            }
           }
         }
       }

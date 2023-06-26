@@ -7,48 +7,43 @@ locals {
 
 # Service Account
 
-resource "kubernetes_service_account" "operator_mongodb" {
+resource "kubernetes_service_account" "mongodb_database" {
   metadata {
     namespace = var.namespace
-    name      = "mongodb-kubernetes-operator"
+    name      = "mongodb-database"
   }
 }
 
-resource "kubernetes_role" "operator_mongodb" {
+resource "kubernetes_role" "mongodb_database" {
   metadata {
     namespace = var.namespace
-    name      = "mongodb-kubernetes-operator"
+    name      = "mongodb-database"
   }
   rule {
     api_groups = [""]
-    resources  = ["pods", "services", "configmaps", "secrets"]
-    verbs      = ["create", "delete", "get", "list", "patch", "update", "watch"]
+    resources  = ["secrets"]
+    verbs      = ["get"]
   }
   rule {
-    api_groups = ["apps"]
-    resources  = ["statefulsets"]
-    verbs      = ["create", "delete", "get", "list", "patch", "update", "watch"]
-  }
-  rule {
-    api_groups = ["mongodbcommunity.mongodb.com"]
-    resources  = ["mongodbcommunity", "mongodbcommunity/status", "mongodbcommunity/spec", "mongodbcommunity/finalizers"]
-    verbs      = ["get", "patch", "list", "update", "watch"]
+    api_groups = [""]
+    resources  = ["pods"]
+    verbs      = ["patch", "delete", "get",]
   }
 }
 
-resource "kubernetes_role_binding" "operator_mongodb" {
+resource "kubernetes_role_binding" "mongodb_database" {
   metadata {
     namespace = var.namespace
-    name      = "mongodb-kubernetes-operator"
+    name      = "mongodb-database"
   }
   subject {
     kind      = "ServiceAccount"
     namespace = var.namespace
-    name      = "mongodb-kubernetes-operator"
+    name      = "mongodb-database"
   }
   role_ref {
     kind      = "Role"
-    name      = "mongodb-kubernetes-operator"
+    name      = "mongodb-database"
     api_group = "rbac.authorization.k8s.io"
   }
 }
@@ -112,7 +107,7 @@ resource "kubectl_manifest" "mongodb" {
     spec = {
       members = var.replica_count
       type    = "ReplicaSet"
-      version = "4.2.6"
+      version = var.mongodb_version
       security = {
         authentication = {
           modes = ["SCRAM"]

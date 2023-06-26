@@ -8,7 +8,7 @@ remote_state {
     project              = "cameronhudson8"
     location             = "us-west1"
     bucket               = "iskprinter-tf-state"
-    prefix               = "application/prod"
+    prefix               = "application/dev-${run_cmd("--terragrunt-quiet", "whoami")}"
     skip_bucket_creation = true
   }
 }
@@ -28,36 +28,21 @@ generate "providers" {
       }
     }
 
-    data "google_client_config" "provider" {}
-
-    data "google_container_cluster" "general_purpose" {
-      project  = "cameronhudson8"
-      location = "us-west1-a"
-      name     = "general-purpose-cluster"
-    }
-
     provider "helm" {
       kubernetes {
-        host                   = "https://$${data.google_container_cluster.general_purpose.endpoint}"
-        token                  = data.google_client_config.provider.access_token
-        cluster_ca_certificate = base64decode(data.google_container_cluster.general_purpose.master_auth[0].cluster_ca_certificate)
+      config_path = "~/.kube/config"
+      config_context = "minikube"
       }
     }
 
     provider "kubectl" {
-      host                   = "https://$${data.google_container_cluster.general_purpose.endpoint}"
-      token                  = data.google_client_config.provider.access_token
-      cluster_ca_certificate = base64decode(data.google_container_cluster.general_purpose.master_auth[0].cluster_ca_certificate) 
-      load_config_file       = false
+      config_path = "~/.kube/config"
+      config_context = "minikube"
     }
 
     provider "kubernetes" {
-      host                   = "https://$${data.google_container_cluster.general_purpose.endpoint}"
-      token                  = data.google_client_config.provider.access_token
-      cluster_ca_certificate = base64decode(data.google_container_cluster.general_purpose.master_auth[0].cluster_ca_certificate)
-      experiments {
-        manifest_resource = true
-      }
+      config_path = "~/.kube/config"
+      config_context = "minikube"
     }
 
   EOF
@@ -69,18 +54,18 @@ generate "modules" {
   contents = <<-EOF
 
     locals {
-      allow_cors_localhost           = false
-      api_host                       = "api.iskprinter.com"
-      api_replicas                   = 2
-      cert_manager_issuer_name       = "lets-encrypt"
+      allow_cors_localhost           = true
+      api_host                       = "api.iskprinter-dev.com"
+      api_replicas                   = 1
+      cert_manager_issuer_name       = "self-signed"
       create_ingress                 = true
-      frontend_host                  = "iskprinter.com"
-      frontend_replicas              = 2
-      acceptance_test_image          = "us-west1-docker.pkg.dev/cameronhudson8/iskprinter/acceptance-test:24304476486b0afaa69919cb036b5b9e1a411980"
-      api_image                      = "us-west1-docker.pkg.dev/cameronhudson8/iskprinter/api:34945807ff2596fbd68b4f2164f08ee2a5cbb3f3"
-      frontend_image                 = "us-west1-docker.pkg.dev/cameronhudson8/iskprinter/frontend:914721f4c6e149f9943e2ebc10b04714eb510622"
-      mongodb_persistent_volume_size = "10Gi"
-      mongodb_replica_count          = 2
+      frontend_host                  = "iskprinter-dev.com"
+      frontend_replicas              = 1
+      acceptance_test_image          = "${get_env("ACCEPTANCE_TEST_IMAGE")}"
+      api_image                      = "${get_env("API_IMAGE")}"
+      frontend_image                 = "${get_env("FRONTEND_IMAGE")}"
+      mongodb_persistent_volume_size = "1Gi"
+      mongodb_replica_count          = 1
       mongodb_version                = "6.0.6"
       namespace_name                 = "iskprinter"
     }
@@ -111,7 +96,8 @@ generate "modules" {
 
     module "api" {
       depends_on = [
-        module.namespace
+        module.external_secrets_secrets,
+        module.namespace,
       ]
       source                            = "../../modules/api"
       api_host                          = local.api_host
@@ -128,7 +114,8 @@ generate "modules" {
 
     module "frontend" {
       depends_on = [
-        module.namespace
+        module.external_secrets_secrets,
+        module.namespace,
       ]
       source                   = "../../modules/frontend"
       api_host                 = local.api_host

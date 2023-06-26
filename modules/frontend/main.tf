@@ -84,7 +84,7 @@ resource "kubernetes_service" "frontend" {
   }
 }
 
-resource "kubernetes_ingress" "frontend" {
+resource "kubernetes_ingress_v1" "frontend" {
   count                  = var.create_ingress ? 1 : 0
   wait_for_load_balancer = true
   metadata {
@@ -108,8 +108,12 @@ resource "kubernetes_ingress" "frontend" {
         path {
           path = "/"
           backend {
-            service_name = local.service_name
-            service_port = local.service_port
+            service {
+              name = local.service_name
+              port {
+                number = local.service_port
+              }
+            }
           }
         }
       }
@@ -120,8 +124,12 @@ resource "kubernetes_ingress" "frontend" {
         path {
           path = "/"
           backend {
-            service_name = local.service_name
-            service_port = local.service_port
+            service {
+              name = local.service_name
+              port {
+                number = local.service_port
+              }
+            }
           }
         }
       }
