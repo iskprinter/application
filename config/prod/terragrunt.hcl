@@ -76,9 +76,9 @@ generate "modules" {
       create_ingress                 = true
       frontend_host                  = "iskprinter.com"
       frontend_replicas              = 2
-      acceptance_test_image          = "us-west1-docker.pkg.dev/cameronhudson8/iskprinter/acceptance-test:24304476486b0afaa69919cb036b5b9e1a411980"
-      api_image                      = "us-west1-docker.pkg.dev/cameronhudson8/iskprinter/api:34945807ff2596fbd68b4f2164f08ee2a5cbb3f3"
-      frontend_image                 = "us-west1-docker.pkg.dev/cameronhudson8/iskprinter/frontend:914721f4c6e149f9943e2ebc10b04714eb510622"
+      acceptance_test_image          = "us-west1-docker.pkg.dev/cameronhudson8/iskprinter/acceptance-test:4b3cd8e096b0a913df7949658efedeff722d26df"
+      api_image                      = "us-west1-docker.pkg.dev/cameronhudson8/iskprinter/api:25503e5e353ea05efe3c9a57f4a70d6f41565ea2"
+      frontend_image                 = "us-west1-docker.pkg.dev/cameronhudson8/iskprinter/frontend:f9b287e7df94e714f86aac90ce197a0babd415f8"
       mongodb_persistent_volume_size = "10Gi"
       mongodb_replica_count          = 2
       mongodb_version                = "6.0.6"
