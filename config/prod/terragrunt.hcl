@@ -80,7 +80,7 @@ generate "modules" {
       api_image                      = "us-west1-docker.pkg.dev/cameronhudson8/iskprinter/api:25503e5e353ea05efe3c9a57f4a70d6f41565ea2"
       frontend_image                 = "us-west1-docker.pkg.dev/cameronhudson8/iskprinter/frontend:f9b287e7df94e714f86aac90ce197a0babd415f8"
       mongodb_persistent_volume_size = "10Gi"
-      mongodb_replica_count          = 2
+      mongodb_replica_count          = 3
       mongodb_version                = "6.0.6"
       namespace_name                 = "iskprinter"
     }
