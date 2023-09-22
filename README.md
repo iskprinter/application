@@ -4,7 +4,29 @@ Terraform configuration to deploy all application-layer ISK Printer components
 
 ## Local Development Instructions
 
-1. Clone each of the component repos and build their containers.
+1. Create a `docker-registry` secret to allow image pulling from GCP Artifact Registry. The file `minikube-image-puller-key.json` 
+    ```
+    gcloud iam service-accounts keys create \
+            "${HOME}/.ssh/minikube-image-puller-key.json" \
+            --iam-account=minikube-image-puller@cameronhudson8.iam.gserviceaccount.com
+    kubectl create secret docker-registry image-pull-secret \
+        --context minikube \
+        -n iskprinter \
+        --docker-server='https://us-west1-docker.pkg.dev' \
+        --docker-email='minikube-image-puller@cameronhudson8.iam.gserviceaccount.com' \
+        --docker-username='_json_key' \
+        --docker-password="$(cat "${HOME}/.ssh/minikube-image-puller-key.json")"
+    ```
+
+1. Patch the default serviceaccount in the `iskprinter` namespace.
+    ```
+    kubectl patch serviceaccount default \
+        --context minikube \
+        -n iskprinter \
+        -p '{"imagePullSecrets": [{"name": "image-pull-secret"}]}'
+    ```
+
+1. Clone the repo(s) of the components that you want to develop, and build their container(s). Refer to `./config/dev/terragrunt.hcl` for the the supported images and their corresponding environment variables. 
     ```
     pushd ../api
     export API_IMAGE='iskprinter-api'
@@ -16,10 +38,7 @@ Terraform configuration to deploy all application-layer ISK Printer components
     minikube image build . -t "$FRONTEND_IMAGE"
     popd
 
-    pushd ../acceptance-test
-    export ACCEPTANCE_TEST_IMAGE='iskprinter-acceptance-test'
-    minikube image build . -t "$ACCEPTANCE_TEST_IMAGE"
-    popd
+    ...
     ```
 
 1. Deploy the application.
