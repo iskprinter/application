@@ -18,28 +18,6 @@ generate "providers" {
   if_exists = "overwrite_terragrunt"
   contents = <<-EOF
 
-    terraform {
-      required_version = ">= 0.13"
-      required_providers {
-        kubectl = {
-          source  = "gavinbunney/kubectl"
-          version = ">= 1.7.0"
-        }
-      }
-    }
-
-    provider "helm" {
-      kubernetes {
-      config_path = "~/.kube/config"
-      config_context = "minikube"
-      }
-    }
-
-    provider "kubectl" {
-      config_path = "~/.kube/config"
-      config_context = "minikube"
-    }
-
     provider "kubernetes" {
       config_path = "~/.kube/config"
       config_context = "minikube"
@@ -75,14 +53,6 @@ generate "modules" {
       name   = local.namespace_name
     }
 
-    module "external_secrets_secrets" {
-      depends_on = [
-        module.namespace
-      ]
-      source    = "../../modules/external_secrets_secrets"
-      namespace = local.namespace_name
-    }
-
     module "db_document" {
       depends_on = [
         module.namespace
@@ -96,7 +66,6 @@ generate "modules" {
 
     module "api" {
       depends_on = [
-        module.external_secrets_secrets,
         module.namespace,
       ]
       source                            = "../../modules/api"
@@ -114,7 +83,6 @@ generate "modules" {
 
     module "frontend" {
       depends_on = [
-        module.external_secrets_secrets,
         module.namespace,
       ]
       source                   = "../../modules/frontend"

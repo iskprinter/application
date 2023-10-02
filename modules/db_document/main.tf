@@ -92,8 +92,8 @@ resource "kubernetes_secret" "mongodb_user_api_credentials" {
 
 # Statefulset
 
-resource "kubectl_manifest" "mongodb" {
-  yaml_body = yamlencode({
+resource "kubernetes_manifest" "mongodb" {
+  manifest = {
     apiVersion = "mongodbcommunity.mongodb.com/v1"
     kind       = "MongoDBCommunity"
     metadata = {
@@ -198,7 +198,7 @@ resource "kubectl_manifest" "mongodb" {
         }
       }
     }
-  })
+  }
 }
 
 resource "kubernetes_secret" "mongodb_connection" {

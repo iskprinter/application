@@ -50,12 +50,14 @@ Terraform configuration to deploy all application-layer ISK Printer components
 1. Get the certificate contents and save it locally.
     ```
     kubectl get secret tls-frontend \
+        --context minikube \
         -n iskprinter \
         -o json \
         | jq -r '.data["tls.crt"]' \
         | base64 -d \
         >~/Desktop/iskprinter-dev.com.pem
     kubectl get secret tls-api \
+        --context minikube \
         -n iskprinter \
         -o json \
         | jq -r '.data["tls.crt"]' \

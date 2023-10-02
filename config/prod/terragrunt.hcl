@@ -18,43 +18,18 @@ generate "providers" {
   if_exists = "overwrite_terragrunt"
   contents = <<-EOF
 
-    terraform {
-      required_version = ">= 0.13"
-      required_providers {
-        kubectl = {
-          source  = "gavinbunney/kubectl"
-          version = ">= 1.7.0"
-        }
-      }
-    }
-
     data "google_client_config" "provider" {}
 
-    data "google_container_cluster" "general_purpose" {
+    data "google_container_cluster" "main" {
       project  = "cameronhudson8"
-      location = "us-west1-a"
-      name     = "general-purpose-cluster"
-    }
-
-    provider "helm" {
-      kubernetes {
-        host                   = "https://$${data.google_container_cluster.general_purpose.endpoint}"
-        token                  = data.google_client_config.provider.access_token
-        cluster_ca_certificate = base64decode(data.google_container_cluster.general_purpose.master_auth[0].cluster_ca_certificate)
-      }
-    }
-
-    provider "kubectl" {
-      host                   = "https://$${data.google_container_cluster.general_purpose.endpoint}"
-      token                  = data.google_client_config.provider.access_token
-      cluster_ca_certificate = base64decode(data.google_container_cluster.general_purpose.master_auth[0].cluster_ca_certificate) 
-      load_config_file       = false
+      location = "us-central1"
+      name     = "main"
     }
 
     provider "kubernetes" {
-      host                   = "https://$${data.google_container_cluster.general_purpose.endpoint}"
+      host                   = "https://$${data.google_container_cluster.main.endpoint}"
       token                  = data.google_client_config.provider.access_token
-      cluster_ca_certificate = base64decode(data.google_container_cluster.general_purpose.master_auth[0].cluster_ca_certificate)
+      cluster_ca_certificate = base64decode(data.google_container_cluster.main.master_auth[0].cluster_ca_certificate)
       experiments {
         manifest_resource = true
       }

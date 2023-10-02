@@ -1,6 +1,6 @@
-resource "kubectl_manifest" "api_client_credentials" {
-  yaml_body = yamlencode({
-    apiVersion = "external-secrets.io/v1alpha1"
+resource "kubernetes_manifest" "api_client_credentials" {
+  manifest = {
+    apiVersion = "external-secrets.io/v1beta1"
     kind       = "ExternalSecret"
     type       = "Opaque"
     metadata = {
@@ -33,12 +33,12 @@ resource "kubectl_manifest" "api_client_credentials" {
       ]
       refreshInterval = "5s"
     }
-  })
+  }
 }
 
-resource "kubectl_manifest" "iskprinter_jwt_keys" {
-  yaml_body = yamlencode({
-    apiVersion = "external-secrets.io/v1alpha1"
+resource "kubernetes_manifest" "iskprinter_jwt_keys" {
+  manifest = {
+    apiVersion = "external-secrets.io/v1beta1"
     kind       = "ExternalSecret"
     type       = "Opaque"
     metadata = {
@@ -72,5 +72,5 @@ resource "kubectl_manifest" "iskprinter_jwt_keys" {
       ]
       refreshInterval = "5s"
     }
-  })
+  }
 }
