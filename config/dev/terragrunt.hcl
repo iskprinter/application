@@ -8,7 +8,7 @@ remote_state {
     project              = "cameronhudson8"
     location             = "us-west1"
     bucket               = "iskprinter-tf-state"
-    prefix               = "application/prod"
+    prefix               = "application/dev-${run_cmd("--terragrunt-quiet", "whoami")}"
     skip_bucket_creation = true
   }
 }
@@ -18,21 +18,9 @@ generate "providers" {
   if_exists = "overwrite_terragrunt"
   contents = <<-EOF
 
-    data "google_client_config" "provider" {}
-
-    data "google_container_cluster" "main" {
-      project  = "cameronhudson8"
-      location = "us-central1"
-      name     = "main"
-    }
-
     provider "kubernetes" {
-      host                   = "https://$${data.google_container_cluster.main.endpoint}"
-      token                  = data.google_client_config.provider.access_token
-      cluster_ca_certificate = base64decode(data.google_container_cluster.main.master_auth[0].cluster_ca_certificate)
-      experiments {
-        manifest_resource = true
-      }
+      config_path = "~/.kube/config"
+      config_context = "minikube"
     }
 
   EOF
@@ -44,18 +32,18 @@ generate "modules" {
   contents = <<-EOF
 
     locals {
-      allow_cors_localhost           = false
-      api_host                       = "api.iskprinter.com"
-      api_replicas                   = 2
-      cert_manager_issuer_name       = "lets-encrypt"
+      allow_cors_localhost           = true
+      api_host                       = "api.iskprinter-dev.com"
+      api_replicas                   = 1
+      cert_manager_issuer_name       = "self-signed"
       create_ingress                 = true
-      frontend_host                  = "iskprinter.com"
-      frontend_replicas              = 2
-      acceptance_test_image          = "us-west1-docker.pkg.dev/cameronhudson8/iskprinter/acceptance-test:4b3cd8e096b0a913df7949658efedeff722d26df"
-      api_image                      = "us-west1-docker.pkg.dev/cameronhudson8/iskprinter/api:25503e5e353ea05efe3c9a57f4a70d6f41565ea2"
-      frontend_image                 = "us-west1-docker.pkg.dev/cameronhudson8/iskprinter/frontend:f9b287e7df94e714f86aac90ce197a0babd415f8"
-      mongodb_persistent_volume_size = "10Gi"
-      mongodb_replica_count          = 3
+      frontend_host                  = "iskprinter-dev.com"
+      frontend_replicas              = 1
+      acceptance_test_image          = "${get_env("ACCEPTANCE_TEST_IMAGE", "us-west1-docker.pkg.dev/cameronhudson8/iskprinter/acceptance-test:4b3cd8e096b0a913df7949658efedeff722d26df")}"
+      api_image                      = "${get_env("API_IMAGE", "us-west1-docker.pkg.dev/cameronhudson8/iskprinter/api:25503e5e353ea05efe3c9a57f4a70d6f41565ea2")}"
+      frontend_image                 = "${get_env("FRONTEND_IMAGE", "us-west1-docker.pkg.dev/cameronhudson8/iskprinter/frontend:f9b287e7df94e714f86aac90ce197a0babd415f8")}"
+      mongodb_persistent_volume_size = "1Gi"
+      mongodb_replica_count          = 1
       mongodb_version                = "6.0.6"
       namespace_name                 = "iskprinter"
     }
@@ -63,14 +51,6 @@ generate "modules" {
     module "namespace" {
       source = "../../modules/namespace"
       name   = local.namespace_name
-    }
-
-    module "external_secrets_secrets" {
-      depends_on = [
-        module.namespace
-      ]
-      source    = "../../modules/external_secrets_secrets"
-      namespace = local.namespace_name
     }
 
     module "db_document" {
@@ -86,7 +66,7 @@ generate "modules" {
 
     module "api" {
       depends_on = [
-        module.namespace
+        module.namespace,
       ]
       source                            = "../../modules/api"
       api_host                          = local.api_host
@@ -103,7 +83,7 @@ generate "modules" {
 
     module "frontend" {
       depends_on = [
-        module.namespace
+        module.namespace,
       ]
       source                   = "../../modules/frontend"
       api_host                 = local.api_host

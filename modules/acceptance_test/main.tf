@@ -4,7 +4,7 @@ locals {
   restart_policy = "Never"
 }
 
-resource "kubernetes_cron_job" "acceptance_test" {
+resource "kubernetes_cron_job_v1" "acceptance_test" {
   metadata {
     namespace = var.namespace
     name      = local.name
@@ -23,10 +23,12 @@ resource "kubernetes_cron_job" "acceptance_test" {
             name = local.name
           }
           spec {
+            
             restart_policy = local.restart_policy
             container {
               name  = local.name
               image = var.image
+              image_pull_policy = "IfNotPresent"
               env {
                 name  = "CYPRESS_BASE_URL"
                 value = "http://frontend"

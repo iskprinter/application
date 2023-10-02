@@ -1,6 +1,6 @@
-resource "kubectl_manifest" "api_client_credentials" {
-  yaml_body = yamlencode({
-    apiVersion = "external-secrets.io/v1alpha1"
+resource "kubernetes_manifest" "api_client_credentials" {
+  manifest = {
+    apiVersion = "external-secrets.io/v1beta1"
     kind       = "ExternalSecret"
     type       = "Opaque"
     metadata = {
@@ -19,26 +19,26 @@ resource "kubectl_manifest" "api_client_credentials" {
         {
           secretKey = "id"
           remoteRef = {
-            key      = "secret/${var.env_name}/api-client-credentials"
+            key      = "secret/api-client-credentials"
             property = "id"
           },
         },
         {
           secretKey = "secret"
           remoteRef = {
-            key      = "secret/${var.env_name}/api-client-credentials"
+            key      = "secret/api-client-credentials"
             property = "secret"
           }
         }
       ]
       refreshInterval = "5s"
     }
-  })
+  }
 }
 
-resource "kubectl_manifest" "iskprinter_jwt_keys" {
-  yaml_body = yamlencode({
-    apiVersion = "external-secrets.io/v1alpha1"
+resource "kubernetes_manifest" "iskprinter_jwt_keys" {
+  manifest = {
+    apiVersion = "external-secrets.io/v1beta1"
     kind       = "ExternalSecret"
     type       = "Opaque"
     metadata = {
@@ -56,21 +56,21 @@ resource "kubectl_manifest" "iskprinter_jwt_keys" {
       data = [
         {
           remoteRef = {
-            key      = "secret/${var.env_name}/iskprinter-jwt-keys"
+            key      = "secret/iskprinter-jwt-keys"
             property = "private-key"
           }
-          secretKey = "iskprinter-jwt-private-key.pem"
+          secretKey = "private-key.pem"
         },
         {
           remoteRef = {
-            key      = "secret/${var.env_name}/iskprinter-jwt-keys"
+            key      = "secret/iskprinter-jwt-keys"
             property = "public-key"
           }
-          secretKey = "iskprinter-jwt-public-key.pem"
+          secretKey = "public-key.pem"
 
         }
       ]
       refreshInterval = "5s"
     }
-  })
+  }
 }
