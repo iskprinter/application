@@ -32,12 +32,22 @@ generate "main" {
     }
 
     module "cloudnative_pg" {
-      depends_on         = [kubernetes_namespace.iskprinter]
+      depends_on = [
+        kubernetes_namespace.iskprinter
+      ]
       namespace          = ${jsonencode(local.global_vars.namespace)}
       source             = "../../modules/cloudnative-pg"
       replicas           = ${jsonencode(local.env_vars.cloudnative_pg_replicas)}
       storage_capacity   = ${jsonencode(local.env_vars.cloudnative_pg_storage_capacity)}
       storage_class_name = ${jsonencode(local.env_vars.cloudnative_pg_storage_class_name)}
+    }
+
+    module "data_downloader" {
+      depends_on = [
+        module.cloudnative_pg
+      ]
+      namespace = ${jsonencode(local.global_vars.namespace)}
+      source    = "../../modules/data-downloader"
     }
   EOF
 }
