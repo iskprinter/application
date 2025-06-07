@@ -68,35 +68,49 @@ for _ in $(seq 0 30); do
 done
 
 # Create database 'iskprinter'.
-if db_exists "${ISKPRINTER_DATABASE_NAME}"; then
-    echo "Database '${ISKPRINTER_DATABASE_NAME}' already exists. Skipping creation."
+db_name="${ISKPRINTER_POSTGRES_DATABASE_ISKPRINTER_NAME}"
+if db_exists "${db_name}"; then
+    echo "Database '${db_name}' already exists. Skipping creation."
 else 
-    echo "Creating database '${ISKPRINTER_DATABASE_NAME}'..."
-    create_db "${ISKPRINTER_DATABASE_NAME}"
+    echo "Creating database '${db_name}'..."
+    create_db "${db_name}"
+fi
+
+# Create database 'superset'.
+db_name="${ISKPRINTER_POSTGRES_DATABASE_SUPERSET_NAME}"
+if db_exists "${db_name}"; then
+    echo "Database '${db_name}' already exists. Skipping creation."
+else 
+    echo "Creating database '${db_name}'..."
+    create_db "${db_name}"
 fi
 
 # Create user 'database-populator'.
-username="$(cat "${ISKPRINTER_DATABASE_POPULATOR_USERNAME_PATH}")"
-password="$(cat "${ISKPRINTER_DATABASE_POPULATOR_PASSWORD_PATH}")"
-privileges='CONNECT'
+username="$(cat "${ISKPRINTER_POSTGRES_USER_DATABASE_POPULATOR_USERNAME_PATH}")"
+password="$(cat "${ISKPRINTER_POSTGRES_USER_DATABASE_POPULATOR_PASSWORD_PATH}")"
+db_privileges_iskprinter='CONNECT'
 if user_exists "${username}"; then
     echo "User '${username}' already exists. Skipping creation."
 else
     echo "Creating user '${username}'..."
     create_user "${username}" "${password}"
 fi
-echo "Granting privileges '${privileges}' to user '${username}' on database '${ISKPRINTER_DATABASE_NAME}'..."
-grant_privileges "${username}" "${ISKPRINTER_DATABASE_NAME}" "${privileges}"
+echo "Granting privileges '${db_privileges_iskprinter}' to user '${username}' on database '${ISKPRINTER_POSTGRES_DATABASE_ISKPRINTER_NAME}'..."
+grant_privileges "${username}" "${ISKPRINTER_POSTGRES_DATABASE_ISKPRINTER_NAME}" "${db_privileges_iskprinter}"
 
 # Create user 'superset'.
-username="$(cat "${ISKPRINTER_SUPERSET_USERNAME_PATH}")"
-password="$(cat "${ISKPRINTER_SUPERSET_PASSWORD_PATH}")"
-privileges='CONNECT'
+username="$(cat "${ISKPRINTER_POSTGRES_USER_SUPERSET_USERNAME_PATH}")"
+password="$(cat "${ISKPRINTER_POSTGRES_USER_SUPERSET_PASSWORD_PATH}")"
+db_privileges_iskprinter='CONNECT'
+db_privileges_superset='CONNECT'
 if user_exists "${username}"; then
     echo "User '${username}' already exists. Skipping creation."
 else
     echo "Creating user '${username}'..."
     create_user "${username}" "${password}"
 fi
-echo "Granting privileges '${privileges}' to user '${username}' on database '${ISKPRINTER_DATABASE_NAME}'..."
-grant_privileges "${username}" "${ISKPRINTER_DATABASE_NAME}" "${privileges}"
+echo "Granting privileges '${db_privileges_iskprinter}' to user '${username}' on database '${ISKPRINTER_POSTGRES_DATABASE_ISKPRINTER_NAME}'..."
+grant_privileges "${username}" "${ISKPRINTER_POSTGRES_DATABASE_ISKPRINTER_NAME}" "${db_privileges_iskprinter}"
+echo "Granting privileges '${db_privileges_superset}' to user '${username}' on database '${ISKPRINTER_POSTGRES_DATABASE_SUPERSET_NAME}'..."
+grant_privileges "${username}" "${ISKPRINTER_POSTGRES_DATABASE_SUPERSET_NAME}" "${db_privileges_superset}"
+echo

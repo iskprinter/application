@@ -14,34 +14,34 @@ LOG.addHandler(streamHandler)
 
 def main():
     with open(
-        file=os.getenv("ISKPRINTER_DATABASE_USERNAME_PATH"),
+        file=os.getenv("ISKPRINTER_POSTGRES_USERNAME_PATH"),
         mode="r",
         encoding="utf-8",
     ) as f:
-        database_username = f.read().strip()
+        postgres_username = f.read().strip()
 
     with open(
-        file=os.getenv("ISKPRINTER_DATABASE_PASSWORD_PATH"),
+        file=os.getenv("ISKPRINTER_POSTGRES_PASSWORD_PATH"),
         mode="r",
         encoding="utf-8",
     ) as f:
-        database_password = f.read().strip()
+        postgres_password = f.read().strip()
 
-    database_name = os.getenv("ISKPRINTER_DATABASE_NAME")
-    database_hostname = os.getenv("ISKPRINTER_DATABASE_HOSTNAME")
+    database_name = os.getenv("ISKPRINTER_POSTGRES_DATABASE_NAME")
+    postgres_hostname = os.getenv("ISKPRINTER_POSTGRES_HOSTNAME")
 
     with psycopg.connect(
         autocommit=True,
         dbname=database_name,
-        host=database_hostname,
-        password=database_password,
+        host=postgres_hostname,
+        password=postgres_password,
         port=5432,
-        user=database_username,
+        user=postgres_username,
     ) as conn:
         LOG.info("Connected to the database '%s'.", database_name)
         LOG.info("Populating the database...")
 
-    iskprinter_database_uri = f"postgresql://{database_username}:{database_password}@{database_hostname}/{database_name}"
+    iskprinter_database_uri = f"postgresql://{postgres_username}:{postgres_password}@{postgres_hostname}/{database_name}"
 
 if __name__ == "__main__":
     main()
