@@ -1,0 +1,70 @@
+networks:
+  iskprinter:
+    driver: bridge
+services:
+  database-populator:
+    build:
+      context: ./database-populator
+    container_name: database-populator
+    depends_on:
+      - postgres
+    environment:
+      ISKPRINTER_DATABASE_HOSTNAME: iskprinter-postgres
+      ISKPRINTER_DATABASE_NAME: iskprinter
+      ISKPRINTER_DATABASE_PASSWORD_PATH: /run/secrets/database-credentials/password
+      ISKPRINTER_DATABASE_USERNAME_PATH: /run/secrets/database-credentials/username
+    networks:
+      - iskprinter
+    volumes:
+      - ./secrets/database-credentials/database-populator/password:/run/secrets/database-credentials/password
+      - ./secrets/database-credentials/database-populator/username:/run/secrets/database-credentials/username
+  postgres:
+    command:
+      - /usr/bin/env
+      - bash
+      - -eu
+      - -o
+      - pipefail
+      - -c
+      - |
+        # I'm not sure why this can't be placed beside "-eu" above.
+        set -m
+
+        # Start postgres with the default entrypoint and command.
+        docker-entrypoint.sh postgres &
+
+        # Confirm that the application database and the non-admin users exist.
+        echo "Creating database and users..."
+        /run/config-maps/create-database-and-users.sh
+
+        # Bring the postgres process back to the foreground.
+        fg
+    container_name: iskprinter-postgres
+    environment:
+      ISKPRINTER_DATABASE_NAME: iskprinter
+      ISKPRINTER_DATABASE_POPULATOR_PASSWORD_PATH: /run/secrets/database-populator-password
+      ISKPRINTER_DATABASE_POPULATOR_USERNAME_PATH: /run/secrets/database-populator-username
+      ISKPRINTER_SUPERSET_PASSWORD_PATH: /run/secrets/superset-password
+      ISKPRINTER_SUPERSET_USERNAME_PATH: /run/secrets/superset-username
+      POSTGRES_PASSWORD_FILE: /run/secrets/admin-password
+      POSTGRES_USER_FILE: /run/secrets/admin-username
+    entrypoint: []
+    hostname: iskprinter-postgres
+    healthcheck:
+      test:
+        - CMD
+        - pg_isready
+    image: docker.io/library/postgres:17
+    networks:
+      - iskprinter
+    volumes:
+      - ./postgres/create-database-and-users.sh:/run/config-maps/create-database-and-users.sh
+      - ./secrets/database-credentials/admin/password:/run/secrets/admin-password
+      - ./secrets/database-credentials/admin/password:/run/secrets/superset-password
+      - ./secrets/database-credentials/admin/username:/run/secrets/admin-username
+      - ./secrets/database-credentials/database-populator/password:/run/secrets/database-populator-password
+      - ./secrets/database-credentials/database-populator/username:/run/secrets/database-populator-username
+      - ./secrets/database-credentials/superset/username:/run/secrets/superset-username
+      - postgres:/var/lib/postgresql/data
+volumes:
+  postgres: {}

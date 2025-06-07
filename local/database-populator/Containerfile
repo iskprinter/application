@@ -1,0 +1,25 @@
+FROM docker.io/library/python:3
+RUN : \
+    && groupadd python --system  \
+    && useradd python \
+        --create-home \
+        --gid python \
+        --system
+USER python
+WORKDIR /app
+RUN chown python:python /app
+
+# Install Python dependencies
+COPY --chown=python:python \
+    ./requirements.txt .
+RUN : \
+    && pip install pip --upgrade \
+    && pip install \
+        --no-cache-dir \
+        --requirement requirements.txt \
+    && rm requirements.txt
+
+COPY --chown=python:python \
+    ./src .
+
+CMD [ "/usr/bin/env", "python", "." ]
