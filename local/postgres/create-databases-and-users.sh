@@ -102,7 +102,6 @@ grant_privileges "${username}" "${ISKPRINTER_POSTGRES_DATABASE_ISKPRINTER_NAME}"
 username="$(cat "${ISKPRINTER_POSTGRES_USER_SUPERSET_USERNAME_PATH}")"
 password="$(cat "${ISKPRINTER_POSTGRES_USER_SUPERSET_PASSWORD_PATH}")"
 db_privileges_iskprinter='CONNECT'
-db_privileges_superset='CONNECT'
 if user_exists "${username}"; then
     echo "User '${username}' already exists. Skipping creation."
 else
@@ -111,6 +110,10 @@ else
 fi
 echo "Granting privileges '${db_privileges_iskprinter}' to user '${username}' on database '${ISKPRINTER_POSTGRES_DATABASE_ISKPRINTER_NAME}'..."
 grant_privileges "${username}" "${ISKPRINTER_POSTGRES_DATABASE_ISKPRINTER_NAME}" "${db_privileges_iskprinter}"
-echo "Granting privileges '${db_privileges_superset}' to user '${username}' on database '${ISKPRINTER_POSTGRES_DATABASE_SUPERSET_NAME}'..."
-grant_privileges "${username}" "${ISKPRINTER_POSTGRES_DATABASE_SUPERSET_NAME}" "${db_privileges_superset}"
+echo "Giving the user '${username}' ownership of database '${ISKPRINTER_POSTGRES_DATABASE_SUPERSET_NAME}'..."
+psql \
+    --command "ALTER DATABASE \"${ISKPRINTER_POSTGRES_DATABASE_SUPERSET_NAME}\" OWNER TO \"${username}\";" \
+    --host localhost \
+    --username "${admin_username}" \
+    --variable ON_ERROR_STOP=1
 echo

@@ -68,5 +68,28 @@ services:
       - ./secrets/postgres-credentials/superset/password:/run/secrets/postgres-credentials/superset/password
       - ./secrets/postgres-credentials/superset/username:/run/secrets/postgres-credentials/superset/username
       - postgres:/var/lib/postgresql/data
+  superset:
+    build:
+      context: ./superset
+    container_name: iskprinter-superset
+    depends_on:
+      - postgres
+    environment:
+      ISKPRINTER_POSTGRES_DATABASE_NAME: superset
+      ISKPRINTER_POSTGRES_HOSTNAME: iskprinter-postgres
+      ISKPRINTER_POSTGRES_PASSWORD_PATH: /run/secrets/postgres-credentials/password
+      ISKPRINTER_POSTGRES_USERNAME_PATH: /run/secrets/postgres-credentials/username
+      ISKPRINTER_SUPERSET_ADMIN_PASSWORD_PATH: /run/secrets/superset-credentials/admin/password
+      SUPERSET_SECRET_KEY_PATH: /run/secrets/superset-secret-key
+    networks:
+      - iskprinter
+    ports:
+      - "[::1]:8088:8088"
+      - 127.0.0.1:8088:8088
+    volumes:
+      - ./secrets/postgres-credentials/superset/password:/run/secrets/postgres-credentials/password
+      - ./secrets/postgres-credentials/superset/username:/run/secrets/postgres-credentials/username
+      - ./secrets/superset-credentials/admin/password:/run/secrets/superset-credentials/admin/password
+      - ./secrets/superset-secret-key:/run/secrets/superset-secret-key
 volumes:
   postgres: {}

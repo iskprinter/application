@@ -1,0 +1,45 @@
+ARG SUPERSET_VERSION=4.1.2
+FROM "apachesuperset.docker.scarf.sh/apache/superset:${SUPERSET_VERSION}"
+ARG SUPERSET_VERSION
+
+# Download the initialization scripts that, for some reason, are not included in the container image.
+USER root
+RUN : \
+    && apt-get update \
+    && apt-get install git -y \
+    && git clone https://github.com/apache/superset.git /tmp/superset \
+        --depth 1 \
+        --branch "${SUPERSET_VERSION}" \
+    && apt-get remove git -y \
+    && cp -R /tmp/superset/docker /app/docker \
+    && rm -rf /tmp/superset \
+    && chown -R superset /app/docker \
+    && cat <<-EOF >/container-entrypoint.sh
+		#!/usr/bin/env bash
+		set -eu -o pipefail
+		# Run the script used by the initialization container in https://github.com/apache/superset/blob/master/docker-compose-image-tag.yml.
+        # This container will use the "ADMIN_PASSWORD" environment variable to set the password for the admin user.
+        ADMIN_PASSWORD=\$(cat "\${ISKPRINTER_SUPERSET_ADMIN_PASSWORD_PATH}")
+        export ADMIN_PASSWORD
+		/app/docker/docker-init.sh
+		# Run the entrypoint and command used by the 'superset' container in https://github.com/apache/superset/blob/master/docker-compose-image-tag.yml.
+		/app/docker/docker-bootstrap.sh app-gunicorn
+	EOF
+RUN chmod +x /container-entrypoint.sh
+CMD ["/container-entrypoint.sh"]
+USER superset
+
+# Install Postgres dependencies, per https://superset.apache.org/docs/configuration/databases/
+COPY --chown=superset \
+    ./requirements.txt /app/superset_home/
+RUN : \
+    && pip install pip --upgrade \
+    && pip install \
+        --no-cache-dir \
+        --requirement /app/superset_home/requirements.txt \
+    && rm /app/superset_home/requirements.txt
+
+# Copy in the config file.
+COPY --chown=superset \
+    ./superset_config.py /app/
+ENV SUPERSET_CONFIG_PATH=/app/superset_config.py
