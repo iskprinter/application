@@ -85,9 +85,9 @@ else
     create_db "${db_name}"
 fi
 
-# Create user 'database-populator'.
-username="$(cat "${ISKPRINTER_POSTGRES_USER_DATABASE_POPULATOR_USERNAME_PATH}")"
-password="$(cat "${ISKPRINTER_POSTGRES_USER_DATABASE_POPULATOR_PASSWORD_PATH}")"
+# Create user 'data-downloader'.
+username="$(cat "${ISKPRINTER_POSTGRES_USER_DATA_DOWNLOADER_USERNAME_PATH}")"
+password="$(cat "${ISKPRINTER_POSTGRES_USER_DATA_DOWNLOADER_PASSWORD_PATH}")"
 db_privileges_iskprinter='CONNECT'
 if user_exists "${username}"; then
     echo "User '${username}' already exists. Skipping creation."

@@ -2,10 +2,10 @@ networks:
   iskprinter:
     driver: bridge
 services:
-  database-populator:
+  data-downloader:
     build:
-      context: ./database-populator
-    container_name: database-populator
+      context: ./data-downloader
+    container_name: data-downloader
     depends_on:
       - postgres
     environment:
@@ -16,8 +16,8 @@ services:
     networks:
       - iskprinter
     volumes:
-      - ./secrets/postgres-credentials/database-populator/password:/run/secrets/postgres-credentials/password
-      - ./secrets/postgres-credentials/database-populator/username:/run/secrets/postgres-credentials/username
+      - ./secrets/postgres-credentials/data-downloader/password:/run/secrets/postgres-credentials/password
+      - ./secrets/postgres-credentials/data-downloader/username:/run/secrets/postgres-credentials/username
   postgres:
     command:
       - /usr/bin/env
@@ -44,8 +44,8 @@ services:
     environment:
       ISKPRINTER_POSTGRES_DATABASE_ISKPRINTER_NAME: iskprinter
       ISKPRINTER_POSTGRES_DATABASE_SUPERSET_NAME: superset
-      ISKPRINTER_POSTGRES_USER_DATABASE_POPULATOR_PASSWORD_PATH: /run/secrets/postgres-credentials/database-populator/password
-      ISKPRINTER_POSTGRES_USER_DATABASE_POPULATOR_USERNAME_PATH: /run/secrets/postgres-credentials/database-populator/username
+      ISKPRINTER_POSTGRES_USER_DATA_DOWNLOADER_PASSWORD_PATH: /run/secrets/postgres-credentials/data-downloader/password
+      ISKPRINTER_POSTGRES_USER_DATA_DOWNLOADER_USERNAME_PATH: /run/secrets/postgres-credentials/data-downloader/username
       ISKPRINTER_POSTGRES_USER_SUPERSET_PASSWORD_PATH: /run/secrets/postgres-credentials/superset/password
       ISKPRINTER_POSTGRES_USER_SUPERSET_USERNAME_PATH: /run/secrets/postgres-credentials/superset/username
       POSTGRES_PASSWORD_FILE: /run/secrets/postgres-credentials/admin/password
@@ -63,8 +63,8 @@ services:
       - ./postgres/create-databases-and-users.sh:/run/config-maps/create-databases-and-users.sh
       - ./secrets/postgres-credentials/admin/password:/run/secrets/postgres-credentials/admin/password
       - ./secrets/postgres-credentials/admin/username:/run/secrets/postgres-credentials/admin/username
-      - ./secrets/postgres-credentials/database-populator/password:/run/secrets/postgres-credentials/database-populator/password
-      - ./secrets/postgres-credentials/database-populator/username:/run/secrets/postgres-credentials/database-populator/username
+      - ./secrets/postgres-credentials/data-downloader/password:/run/secrets/postgres-credentials/data-downloader/password
+      - ./secrets/postgres-credentials/data-downloader/username:/run/secrets/postgres-credentials/data-downloader/username
       - ./secrets/postgres-credentials/superset/password:/run/secrets/postgres-credentials/superset/password
       - ./secrets/postgres-credentials/superset/username:/run/secrets/postgres-credentials/superset/username
       - postgres:/var/lib/postgresql/data
