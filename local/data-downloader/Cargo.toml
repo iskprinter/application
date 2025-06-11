@@ -1,0 +1,14 @@
+[package]
+name = "data-downloader"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+sqlx = { version = "0.8", features = ["postgres", "runtime-async-std"] }
+tokio = { version = "1.45", features = ["macros", "rt-multi-thread"] }
+tracing = "0.1" # Tracing facade
+tracing-subscriber = { version = "0.3", features = [
+    "fmt",
+    "json",
+    "env-filter",
+] } # Tracing subscriber with JSON formatting
