@@ -2,70 +2,55 @@
 
 set -eu -o pipefail
 
-admin_username="$(cat "${POSTGRES_USER_FILE}")"
+# No password is needed when connecting via a local unix socket.
+admin_username="${POSTGRES_USER}"
+readonly ADMIN_DATABASE_NAME='postgres'
 
 function create_db {
     local db_name="${1}"
-    psql \
-        --command "CREATE DATABASE \"${db_name}\";" \
-        --host localhost \
-        --username "${admin_username}" \
-        --variable ON_ERROR_STOP=1
+    run_sql_command "${ADMIN_DATABASE_NAME}" "CREATE DATABASE \"${db_name}\";"
 }
 
 function create_user {
     local username="${1}"
     local password="${2}"
-    psql \
-        --command "CREATE USER \"${username}\" WITH PASSWORD '${password}';" \
-        --host localhost \
-        --username "${admin_username}" \
-        --variable ON_ERROR_STOP=1
+    run_sql_command "${ADMIN_DATABASE_NAME}" "CREATE USER \"${username}\" WITH PASSWORD '${password}';"
 }
 
 function db_exists {
 	local db_name="${1}"
-    psql \
-        --command "SELECT 1 FROM pg_database WHERE datname = '${db_name}'" \
-        --no-align \
-        --tuples-only \
-        --username "${admin_username}" \
-        --variable ON_ERROR_STOP=1 \
+    run_sql_command "${ADMIN_DATABASE_NAME}" "SELECT 1 FROM pg_database WHERE datname = '${db_name}';" \
 	| grep -q 1
 }
 
-function grant_privileges {
-    local username="${1}"
-    local db_name="${2}"
-    local privileges="${3}"
+function run_sql_command {
+    local -r database_name="${1}"
+    local -r command="${2}"
+    # Connection will implicitly be made to the unix socket.
     psql \
-        --command "GRANT ${privileges} ON DATABASE \"${db_name}\" TO \"${username}\";" \
-        --host localhost \
+        --command "${command}" \
+        --dbname "${database_name}" \
+        --tuples-only \
         --username "${admin_username}" \
         --variable ON_ERROR_STOP=1
 }
 
 function user_exists {
     local user_name="${1}"
-    psql \
-        --command "SELECT 1 FROM pg_roles WHERE rolname = '${user_name}'" \
-        --no-align \
-        --tuples-only \
-        --username "${admin_username}" \
-        --variable ON_ERROR_STOP=1 \
+    run_sql_command "${ADMIN_DATABASE_NAME}" "SELECT 1 FROM pg_roles WHERE rolname = '${user_name}';" \
     | grep -q 1
 }
 
-# Wait for postgres to be ready.
-echo "Waiting for postgres to be ready..."
-for _ in $(seq 0 30); do
-    if pg_isready >/dev/null; then
-        echo "Postgres is ready."
-        break;
-    fi
-    echo "Postgres is not ready yet. Waiting..."
-    sleep 1
-done
+# # Wait for postgres to be ready.
+# echo "Waiting for postgres to be ready..."
+# for _ in $(seq 0 30); do
+#     if pg_isready >/dev/null; then
+#         echo "Postgres is ready."
+#         break;
+#     fi
+#     echo "Postgres is not ready yet. Waiting..."
+#     sleep 1
+# done
 
 # Create database 'iskprinter'.
 db_name="${ISKPRINTER_POSTGRES_DATABASE_ISKPRINTER_NAME}"
@@ -88,32 +73,27 @@ fi
 # Create user 'data-downloader'.
 username="$(cat "${ISKPRINTER_POSTGRES_USER_DATA_DOWNLOADER_USERNAME_PATH}")"
 password="$(cat "${ISKPRINTER_POSTGRES_USER_DATA_DOWNLOADER_PASSWORD_PATH}")"
-db_privileges_iskprinter='CONNECT'
 if user_exists "${username}"; then
     echo "User '${username}' already exists. Skipping creation."
 else
     echo "Creating user '${username}'..."
     create_user "${username}" "${password}"
 fi
-echo "Granting privileges '${db_privileges_iskprinter}' to user '${username}' on database '${ISKPRINTER_POSTGRES_DATABASE_ISKPRINTER_NAME}'..."
-grant_privileges "${username}" "${ISKPRINTER_POSTGRES_DATABASE_ISKPRINTER_NAME}" "${db_privileges_iskprinter}"
+echo "Running 'GRANT CONNECT ON DATABASE \"${ISKPRINTER_POSTGRES_DATABASE_ISKPRINTER_NAME}\" TO \"${username}\";'..."
+run_sql_command "${ADMIN_DATABASE_NAME}" "GRANT CONNECT ON DATABASE \"${ISKPRINTER_POSTGRES_DATABASE_ISKPRINTER_NAME}\" TO \"${username}\";"
+echo "Running 'GRANT CREATE, USAGE ON SCHEMA public TO \"${username}\";'..."
+run_sql_command "${ISKPRINTER_POSTGRES_DATABASE_ISKPRINTER_NAME}" "GRANT CREATE, USAGE ON SCHEMA public TO \"${username}\";"
 
 # Create user 'superset'.
 username="$(cat "${ISKPRINTER_POSTGRES_USER_SUPERSET_USERNAME_PATH}")"
 password="$(cat "${ISKPRINTER_POSTGRES_USER_SUPERSET_PASSWORD_PATH}")"
-db_privileges_iskprinter='CONNECT'
 if user_exists "${username}"; then
     echo "User '${username}' already exists. Skipping creation."
 else
     echo "Creating user '${username}'..."
     create_user "${username}" "${password}"
 fi
-echo "Granting privileges '${db_privileges_iskprinter}' to user '${username}' on database '${ISKPRINTER_POSTGRES_DATABASE_ISKPRINTER_NAME}'..."
-grant_privileges "${username}" "${ISKPRINTER_POSTGRES_DATABASE_ISKPRINTER_NAME}" "${db_privileges_iskprinter}"
-echo "Giving the user '${username}' ownership of database '${ISKPRINTER_POSTGRES_DATABASE_SUPERSET_NAME}'..."
-psql \
-    --command "ALTER DATABASE \"${ISKPRINTER_POSTGRES_DATABASE_SUPERSET_NAME}\" OWNER TO \"${username}\";" \
-    --host localhost \
-    --username "${admin_username}" \
-    --variable ON_ERROR_STOP=1
-echo
+echo "Running 'ALTER DATABASE \"${ISKPRINTER_POSTGRES_DATABASE_SUPERSET_NAME}\" OWNER TO \"${username}\";'..."
+run_sql_command "${ADMIN_DATABASE_NAME}" "ALTER DATABASE \"${ISKPRINTER_POSTGRES_DATABASE_SUPERSET_NAME}\" OWNER TO \"${username}\";"
+echo "Running 'GRANT CONNECT ON DATABASE \"${ISKPRINTER_POSTGRES_DATABASE_ISKPRINTER_NAME}\" TO \"${username}\";'..."
+run_sql_command "${ADMIN_DATABASE_NAME}" "GRANT CONNECT ON DATABASE \"${ISKPRINTER_POSTGRES_DATABASE_ISKPRINTER_NAME}\" TO \"${username}\";"

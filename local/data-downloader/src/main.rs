@@ -45,8 +45,26 @@ async fn main() {
             error!("Error connecting to postgres: {}", e);
             process::exit(1);
         }
-        Ok(conn) => {
+        Ok(mut conn) => {
             info!("Connected to postgres");
+            sqlx::query(
+                "CREATE TABLE IF NOT EXISTS public.orders (
+                    -- 16 decimal digits equates to 8 bytes. (Although there is an additional over head of up to 8 bytes).
+                    average DECIMAL(16, 2),
+                    date DATE,
+                    highest DECIMAL(16, 2),
+                    http_last_modified DATE,
+                    lowest DECIMAL(16, 2),
+                    order_count BIGINT,
+                    region_id BIGINT,
+                    type_id BIGINT,
+                    volume BIGINT
+                )",
+            ).execute(&mut conn).await.unwrap_or_else(|e| {
+                error!("Error creating table 'orders': {}", e);
+                process::exit(1);
+            });
+            info!("Created table 'orders'.")
         }
     }
 }

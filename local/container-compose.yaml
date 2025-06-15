@@ -5,9 +5,18 @@ services:
   data-downloader:
     build:
       context: ./data-downloader
-    container_name: data-downloader
-    depends_on:
-      - postgres
+    command:
+      # Wait a little while, because postgres is slow and the healthcheck
+      # feature doesn't work.
+      - /bin/sh
+      - -c
+      - |
+        sleep 2
+        /bin/data-downloader
+    container_name: iskprinter-data-downloader
+    # depends_on:
+    #   postgres:
+    #     condition: service_healthy
     environment:
       ISKPRINTER_POSTGRES_DATABASE_NAME: iskprinter
       ISKPRINTER_POSTGRES_HOSTNAME: iskprinter-postgres
@@ -19,28 +28,7 @@ services:
       - ./secrets/postgres-credentials/data-downloader/password:/run/secrets/postgres-credentials/password
       - ./secrets/postgres-credentials/data-downloader/username:/run/secrets/postgres-credentials/username
   postgres:
-    command:
-      - /usr/bin/env
-      - bash
-      - -eu
-      - -o
-      - pipefail
-      - -c
-      - |
-        # I'm not sure why this can't be placed beside "-eu" above.
-        set -m
-
-        # Start postgres with the default entrypoint and command.
-        docker-entrypoint.sh postgres &
-
-        # Confirm that the application database and the non-admin users exist.
-        echo "Creating database and users..."
-        /run/config-maps/create-databases-and-users.sh
-
-        # Bring the postgres process back to the foreground.
-        fg
     container_name: iskprinter-postgres
-    entrypoint: []
     environment:
       ISKPRINTER_POSTGRES_DATABASE_ISKPRINTER_NAME: iskprinter
       ISKPRINTER_POSTGRES_DATABASE_SUPERSET_NAME: superset
@@ -48,19 +36,24 @@ services:
       ISKPRINTER_POSTGRES_USER_DATA_DOWNLOADER_USERNAME_PATH: /run/secrets/postgres-credentials/data-downloader/username
       ISKPRINTER_POSTGRES_USER_SUPERSET_PASSWORD_PATH: /run/secrets/postgres-credentials/superset/password
       ISKPRINTER_POSTGRES_USER_SUPERSET_USERNAME_PATH: /run/secrets/postgres-credentials/superset/username
+      # These two environment variables are *not* accessible within the scripts in /docker-entrypoint-initdb.d/. Instead, the contents of the files are available as POSTGRES_PASSWORD and POSTGRES_USER.
       POSTGRES_PASSWORD_FILE: /run/secrets/postgres-credentials/admin/password
       POSTGRES_USER_FILE: /run/secrets/postgres-credentials/admin/username
-    healthcheck:
-      test:
-        - CMD
-        - pg_isready
+    # # Doesn't work for shit.
+    # healthcheck:
+    #   test:
+    #     - CMD
+    #     - sleep
+    #     - "4"
+    #     - "&&"
+    #     - pg_isready
     hostname: iskprinter-postgres
     # Superset doesn't support Postgres 17 yet. Refer to https://superset.apache.org/docs/configuration/configuring-superset#setting-up-a-production-metadata-database.
     image: docker.io/library/postgres:16
     networks:
       - iskprinter
     volumes:
-      - ./postgres/create-databases-and-users.sh:/run/config-maps/create-databases-and-users.sh
+      - ./postgres/create-databases-and-users.sh:/docker-entrypoint-initdb.d/create-databases-and-users.sh
       - ./secrets/postgres-credentials/admin/password:/run/secrets/postgres-credentials/admin/password
       - ./secrets/postgres-credentials/admin/username:/run/secrets/postgres-credentials/admin/username
       - ./secrets/postgres-credentials/data-downloader/password:/run/secrets/postgres-credentials/data-downloader/password
@@ -71,9 +64,18 @@ services:
   superset:
     build:
       context: ./superset
+    command:
+      # Wait a little while, because postgres is slow and the healthcheck
+      # feature doesn't work.
+      - /bin/sh
+      - -c
+      - |
+        sleep 2
+        /container-entrypoint.sh
     container_name: iskprinter-superset
-    depends_on:
-      - postgres
+    #  depends_on:
+    #    postgres:
+    #      condition: service_healthy
     environment:
       ISKPRINTER_POSTGRES_DATABASE_NAME: superset
       ISKPRINTER_POSTGRES_HOSTNAME: iskprinter-postgres
@@ -84,8 +86,9 @@ services:
     networks:
       - iskprinter
     ports:
-      - "[::1]:8088:8088"
-      - 127.0.0.1:8088:8088
+      # - "[::1]:8088:8088"
+      # - 127.0.0.1:8088:8088
+      - 8088:8088
     volumes:
       - ./secrets/postgres-credentials/superset/password:/run/secrets/postgres-credentials/password
       - ./secrets/postgres-credentials/superset/username:/run/secrets/postgres-credentials/username
